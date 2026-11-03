@@ -1,0 +1,9 @@
+# Parámetros del modelo de valor (ver docs/CONTEXTO.md sección 5).
+# Cada parámetro: valor, rango [min, max] y fuente. `fuente: supuesto` si no viene del bufete.
+# Los números de abajo son marcadores de posición para probar el código: Cami los reemplaza en CP4.
+N:        {value: 300,  min: 150, max: 600, fuente: supuesto, unidad: casos/mes}
+t_m:      {value: 6.0,  min: 3.0, max: 12.0, fuente: supuesto, unidad: minutos/caso}
+c_h:      {value: 50.0, min: 30.0, max: 100.0, fuente: supuesto, unidad: moneda/hora}
+e_0:      {value: 0.10, min: 0.05, max: 0.20, fuente: supuesto, unidad: fracción}
+c_err:    {value: 40.0, min: 20.0, max: 120.0, fuente: supuesto, unidad: moneda/caso}
+C_op:     {value: 0.0,  min: 0.0, max: 200.0, fuente: supuesto, unidad: moneda/mes}

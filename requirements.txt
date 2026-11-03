@@ -1,0 +1,16 @@
+# Versiones sin fijar a propósito: Nes las fija con `pip freeze` en CP0.
+numpy
+pandas
+scikit-learn
+pyyaml
+matplotlib
+torch
+transformers
+accelerate
+shap
+fastapi
+uvicorn
+streamlit
+pytesseract
+pdf2image
+pytest

@@ -1,0 +1,26 @@
+# Datos sensibles del bufete: nunca al repo
+data/raw/*
+data/interim/*
+data/processed/*
+data/external/*
+!data/**/.gitkeep
+
+# Pesos de modelos y salidas pesadas
+artifacts/*
+!artifacts/.gitkeep
+*.pt
+*.pth
+*.bin
+*.safetensors
+
+# Entornos y caches
+venv*/
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ipynb_checkpoints/
+.DS_Store
+
+# Secretos
+.env

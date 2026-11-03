@@ -1,0 +1,52 @@
+# Configuración compartida. Las áreas se confirman con el bufete (Cami, CP0).
+seed: 42
+
+areas:
+  - laboral
+  - civil
+  - mercantil
+  - penal
+  - familia
+  - otros
+
+canales: [correo, formulario, documento, fisico]
+
+paths:
+  raw: data/raw
+  interim: data/interim
+  processed: data/processed
+  external: data/external
+  results: experiments/results
+  artifacts: artifacts
+
+split:
+  ratios: {train: 0.70, val: 0.15, test: 0.15}
+  temporal: false   # true si hay fechas confiables: test = lo más reciente
+
+confidence_threshold: 0.70   # τ de partida; el óptimo se elige con la curva de valor
+
+# Hiperparámetros iniciales (se ajustan solo con val)
+models:
+  m1:
+    max_len: 256
+    embed_dim: 128
+    filters: 100
+    kernel_sizes: [3, 4, 5]
+    dropout: 0.5
+    lr: 1.0e-3
+    batch_size: 32
+    epochs: 20
+  m2:
+    checkpoint: dccuchile/bert-base-spanish-wwm-cased   # verificar existencia y licencia en CP1
+    max_len: 256
+    lr: 1.0e-3
+    batch_size: 32
+    epochs: 20
+  m3:
+    checkpoint: dccuchile/bert-base-spanish-wwm-cased
+    max_len: 256
+    lr: 2.0e-5
+    warmup_ratio: 0.1
+    weight_decay: 0.01
+    batch_size: 16
+    epochs: 5
