@@ -34,8 +34,12 @@ models:
     kernel_sizes: [3, 4, 5]
     dropout: 0.5
     lr: 1.0e-3
+    weight_decay: 1.0e-2
     batch_size: 32
-    epochs: 20
+    epochs: 30
+    patience: 5          # early stopping por F1 macro en val
+    min_freq: 2          # frecuencia mínima para entrar al vocabulario
+    max_vocab: 20000
   m2:
     checkpoint: dccuchile/bert-base-spanish-wwm-cased   # verificado 9 nov: existe, sin acceso restringido, CC BY 4.0 (con aviso para uso comercial)
     max_len: 256
