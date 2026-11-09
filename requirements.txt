@@ -1,13 +1,15 @@
-# Versiones sin fijar a propósito: Nes las fija con `pip freeze` en CP0.
-numpy
-pandas
-scikit-learn
+# Versiones verificadas en el Mac de Nes (Python 3.12 x86_64, torch 2.2.2 es la última versión para este build).
+# shap no se incluye: su dependencia numba/llvmlite no tiene wheel para este build x86_64. Explicabilidad: atención o gradientes integrados.
+# Si usan Python arm64 nativo o Colab, pueden usar torch/transformers más recientes.
+numpy==1.26.4
+pandas==2.2.3
+scikit-learn==1.5.2
+scipy==1.13.1
 pyyaml
-matplotlib
-torch
-transformers
-accelerate
-shap
+matplotlib==3.9.2
+torch==2.2.2
+transformers==4.46.3
+accelerate==0.34.2
 fastapi
 uvicorn
 streamlit
