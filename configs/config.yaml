@@ -51,8 +51,13 @@ models:
   m3:
     checkpoint: dccuchile/bert-base-spanish-wwm-cased
     max_len: 256
+    pooling: mean        # igual que M2, para que la única diferencia sea descongelar el encoder
+    dropout: 0.1
     lr: 2.0e-5
+    layer_decay: 0.9     # tasa menor en capas inferiores: lr * layer_decay^(capas por debajo de la cabeza)
     warmup_ratio: 0.1
     weight_decay: 0.01
+    max_grad_norm: 1.0
     batch_size: 16
     epochs: 5
+    patience: 2          # early stopping por F1 macro en val

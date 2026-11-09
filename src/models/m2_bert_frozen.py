@@ -1,4 +1,4 @@
-"""M2: BETO congelado + cabeza lineal. MODELO BASE de transfer learning. Dueño: Nes (CP1).
+"""M2: BETO congelado + cabeza lineal. MODELO BASE de transfer learning.
 
 El encoder no se entrena: se extraen los embeddings una vez (mean pooling o [CLS]) y solo se
 entrena la cabeza de clasificación. La época se elige por F1 macro en val; con eval_split="val"
@@ -40,13 +40,30 @@ def pool(hidden, mask, mode):
     raise ValueError(f"pooling desconocido: {mode}")
 
 
+def peak_memory_mb(device):
+    try:
+        if device == "cuda":
+            return round(torch.cuda.max_memory_allocated() / 1e6)
+        if device == "mps":
+            return round(torch.mps.driver_allocated_memory() / 1e6)
+    except Exception:
+        pass
+    return None
+
+
 def embed_texts(texts, checkpoint, max_len, pooling, batch_size=32, device=None, cache_dir=None):
-    """Embeddings del encoder congelado. Devuelve (array float32 (n, H), segundos, n_calculados)."""
+    """Embeddings del encoder congelado. Devuelve (array float32 (n, H), costo).
+
+    `costo` = {seconds, n_texts, peak_memory_mb, cached}. Los segundos son los de la corrida que
+    calculó los embeddings, aunque esta vez salgan del caché (guardados junto al .npy), para que el
+    costo reportado no sea 0 por usar el caché.
+    """
     texts = list(texts)
     key = hashlib.sha1("\x00".join([checkpoint, str(max_len), pooling, *texts]).encode()).hexdigest()[:16]
     cache = Path(cache_dir) / f"emb_{key}.npy" if cache_dir else None
-    if cache is not None and cache.exists():
-        return np.load(cache), 0.0, 0
+    meta = cache.with_suffix(".json") if cache is not None else None
+    if cache is not None and cache.exists() and meta.exists():
+        return np.load(cache), {**json.loads(meta.read_text(encoding="utf-8")), "cached": True}
 
     from transformers import AutoModel, AutoTokenizer
     device = device or pick_device()
@@ -65,11 +82,13 @@ def embed_texts(texts, checkpoint, max_len, pooling, batch_size=32, device=None,
                         max_length=max_len, return_tensors="pt").to(device)
             hidden = enc(**batch).last_hidden_state
             out[idx] = pool(hidden, batch["attention_mask"], pooling).float().cpu().numpy()
-    seconds = time.perf_counter() - start
+    cost = {"seconds": round(time.perf_counter() - start, 2), "n_texts": len(texts),
+            "peak_memory_mb": peak_memory_mb(device)}
     if cache is not None:
         cache.parent.mkdir(parents=True, exist_ok=True)
         np.save(cache, out)
-    return out, seconds, len(texts)
+        meta.write_text(json.dumps(cost), encoding="utf-8")
+    return out, {**cost, "cached": False}
 
 
 class Head:
@@ -141,14 +160,16 @@ def run(cfg, eval_split="val", final=False, seed=None, train_df=None, data_dir=N
     ev = val if eval_split == "val" else load_split(cfg, eval_split, final=final, data_dir=data_dir)
 
     device = pick_device()
-    embed_s, n_embedded = 0.0, 0
-    feats = {}
+    costs, feats = [], {}
     for name, df in (("train", train), ("val", val), (eval_split, ev)):
         if name in feats:
             continue
-        feats[name], s, n = embed_texts(df["texto"], mc["checkpoint"], mc["max_len"], mc["pooling"],
+        feats[name], cost = embed_texts(df["texto"], mc["checkpoint"], mc["max_len"], mc["pooling"],
                                         mc["embed_batch_size"], device, cache_dir)
-        embed_s, n_embedded = embed_s + s, n_embedded + n
+        costs.append(cost)
+    embed_s = sum(c["seconds"] for c in costs)
+    n_embedded = sum(c["n_texts"] for c in costs)
+    peaks = [c["peak_memory_mb"] for c in costs if c["peak_memory_mb"]]
 
     y_train = train["area_legal"].map(to_idx).to_numpy()
     y_val = val["area_legal"].map(to_idx).to_numpy()
@@ -168,6 +189,9 @@ def run(cfg, eval_split="val", final=False, seed=None, train_df=None, data_dir=N
         "model": model_id, "checkpoint": mc["checkpoint"], "pooling": mc["pooling"], "seed": seed,
         "device": device, "n_train": len(train), "best_epoch": best_epoch,
         "trainable_params": n_head, "embed_seconds": round(embed_s, 2), "texts_embedded": n_embedded,
+        "embeddings_from_cache": all(c["cached"] for c in costs),
+        "inference_ms_per_text": round(1000 * embed_s / max(n_embedded, 1), 2),  # pasada del encoder por texto
+        "peak_memory_mb": max(peaks) if peaks else None,
         "head_train_seconds": round(head_s, 2), "history": history,
     }
     (out_dir / f"{model_id}_{eval_split}_run.json").write_text(json.dumps(info, indent=1), encoding="utf-8")
