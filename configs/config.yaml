@@ -37,8 +37,10 @@ models:
     batch_size: 32
     epochs: 20
   m2:
-    checkpoint: dccuchile/bert-base-spanish-wwm-cased   # verificar existencia y licencia en CP1
+    checkpoint: dccuchile/bert-base-spanish-wwm-cased   # verificado 9 nov: existe, sin acceso restringido, CC BY 4.0 (con aviso para uso comercial)
     max_len: 256
+    pooling: mean        # mean (media de tokens sin relleno) o cls
+    embed_batch_size: 32
     lr: 1.0e-3
     batch_size: 32
     epochs: 20

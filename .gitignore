@@ -4,6 +4,7 @@ data/interim/*
 data/processed/*
 data/external/*
 !data/**/.gitkeep
+docs/*
 
 # Pesos de modelos y salidas pesadas
 artifacts/*
