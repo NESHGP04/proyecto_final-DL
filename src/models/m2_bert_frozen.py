@@ -148,7 +148,8 @@ def train_head(X_train, y_train, X_val, y_val, n_classes, lr=1e-3, epochs=20, ba
     return Head(mean, std, linear.eval()), history, best_epoch
 
 
-def run(cfg, eval_split="val", final=False, seed=None, train_df=None, data_dir=None, out_dir=None, cache_dir=None):
+def run(cfg, eval_split="val", final=False, seed=None, train_df=None, data_dir=None, out_dir=None, cache_dir=None,
+        tag=None):
     seed = cfg["seed"] if seed is None else seed
     mc = cfg["models"]["m2"]
     areas = list(cfg["areas"])
@@ -179,7 +180,7 @@ def run(cfg, eval_split="val", final=False, seed=None, train_df=None, data_dir=N
     head_s = time.perf_counter() - start
 
     probs = head.predict_proba(feats[eval_split])
-    model_id = MODEL_ID if seed == cfg["seed"] else f"{MODEL_ID}_s{seed}"
+    model_id = tag or (MODEL_ID if seed == cfg["seed"] else f"{MODEL_ID}_s{seed}")
     out_dir = Path(out_dir or path_of(cfg, "results"))
     preds_path = out_dir / f"{model_id}_{eval_split}_preds.csv"
     write_preds(preds_path, ev["case_id"], ev["area_legal"], probs, areas)

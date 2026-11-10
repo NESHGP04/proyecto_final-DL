@@ -1,7 +1,25 @@
-"""Curvas de aprendizaje (10/25/50/100 % de train). Dueño: Nes (CP4)."""
+"""Curvas de aprendizaje (10/25/50/100 % de train) para M1, M2 y M3.
+
+Para cada fracción y semilla se entrena el modelo con una submuestra estratificada de train y se
+mide el F1 macro en val. Muestra cuándo el transfer learning ayuda (pocos datos) y cuándo deja de
+ayudar. Con M3 cada punto es un fine-tuning completo: conviene 1 semilla, o correrlo en Colab.
+
+Uso: python -m src.evaluation.learning_curve --model m1 --seeds 42 43 44
+     python -m src.evaluation.learning_curve --plot-only
+"""
+import argparse
+from pathlib import Path
+
 import numpy as np
+import pandas as pd
+
+from src.config import load_config, path_of
+from src.data.dataset import load_split
+from src.evaluation.metrics import compute_metrics
+from src.evaluation.preds import read_preds
 
 FRACTIONS = (0.10, 0.25, 0.50, 1.00)
+CSV_NAME = "learning_curve.csv"
 
 
 def stratified_subsample(df, frac, seed=42, label_col="area_legal"):
@@ -14,10 +32,83 @@ def stratified_subsample(df, frac, seed=42, label_col="area_legal"):
     return df.loc[sorted(keep)]
 
 
-def run_learning_curve(model_runner, cfg, fractions=FRACTIONS):
-    """Entrena `model_runner` (M1, M2 o M3) con cada fracción de train y evalúa en val.
+def run_learning_curve(model_runner, cfg, model_name, fractions=FRACTIONS, seeds=None, data_dir=None,
+                       out_dir=None):
+    """Entrena `model_runner` con cada fracción de train y evalúa en val. Devuelve un DataFrame con las filas de este modelo.
 
-    Pendiente (Nes): llamar a model_runner(cfg, train_df=subsample), guardar F1 macro por fracción
-    y semilla, y graficar F1 vs. tamaño de datos.
+    model_runner(cfg, "val", seed=, train_df=, data_dir=, out_dir=, tag=) debe escribir las
+    predicciones de val (M1, M2 y M3 lo cumplen). Los resultados se guardan en
+    experiments/results/learning_curve.csv (se reemplazan solo las filas de este modelo).
     """
-    raise NotImplementedError("Nes, CP4")
+    seeds = list(seeds) if seeds else [cfg["seed"]]
+    results = Path(out_dir or path_of(cfg, "results"))
+    runs_dir = results / f"lc_{model_name}"
+    runs_dir.mkdir(parents=True, exist_ok=True)
+    train = load_split(cfg, "train", data_dir=data_dir)
+    labels = list(cfg["areas"])
+
+    rows = []
+    for frac in fractions:
+        for seed in seeds:
+            sub = train if frac >= 1.0 else stratified_subsample(train, frac, seed=seed)
+            tag = f"{model_name}_f{int(round(frac * 100))}_s{seed}"
+            path = model_runner(cfg, "val", seed=seed, train_df=sub, data_dir=data_dir, out_dir=runs_dir, tag=tag)
+            preds = read_preds(path)
+            m = compute_metrics(preds["y_true"], preds["y_pred"], labels)
+            rows.append({"model": model_name, "fraction": frac, "n_train": len(sub), "seed": seed,
+                         "val_macro_f1": m["macro_f1"], "val_accuracy": m["accuracy"]})
+    this_model = pd.DataFrame(rows)
+    csv = results / CSV_NAME
+    merged = this_model
+    if csv.exists():
+        old = pd.read_csv(csv)
+        merged = pd.concat([old[old["model"] != model_name], this_model], ignore_index=True)
+    merged.to_csv(csv, index=False)
+    return this_model
+
+
+def plot_learning_curves(df, path):
+    """F1 macro en val vs. número de casos de entrenamiento: media ± desvío entre semillas por modelo."""
+    import matplotlib
+
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    fig, ax = plt.subplots(figsize=(6.4, 4))
+    for model, g in df.groupby("model"):
+        agg = g.groupby("n_train")["val_macro_f1"].agg(["mean", "std"]).fillna(0).reset_index()
+        ax.plot(agg["n_train"], agg["mean"], marker="o", label=model)
+        ax.fill_between(agg["n_train"], agg["mean"] - agg["std"], agg["mean"] + agg["std"], alpha=0.2)
+    ax.set(xlabel="casos de entrenamiento", ylabel="F1 macro en val", ylim=(0, 1.02), title="Curva de aprendizaje")
+    ax.set_xscale("log")
+    ax.legend()
+    fig.tight_layout()
+    fig.savefig(path, dpi=130)
+    plt.close(fig)
+
+
+def _runner(name):
+    # import tardío: evita cargar torch para quien solo usa stratified_subsample
+    if name == "m1":
+        from src.models.m1_cnn_scratch import run
+    elif name == "m2":
+        from src.models.m2_bert_frozen import run
+    elif name == "m3":
+        from src.models.m3_bert_finetune import run
+    else:
+        raise ValueError(f"modelo desconocido: {name}")
+    return run
+
+
+if __name__ == "__main__":
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--model", choices=["m1", "m2", "m3"])
+    ap.add_argument("--seeds", type=int, nargs="+")
+    ap.add_argument("--plot-only", action="store_true")
+    args = ap.parse_args()
+    cfg = load_config()
+    results = path_of(cfg, "results")
+    if not args.plot_only:
+        run_learning_curve(_runner(args.model), cfg, args.model, seeds=args.seeds)
+    plot_learning_curves(pd.read_csv(results / CSV_NAME), results / "learning_curve.png")
+    print(results / "learning_curve.png")

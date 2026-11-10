@@ -1,4 +1,4 @@
-"""Anonimización de texto. Dueña: Cami (CP1).
+"""Anonimización de texto.
 
 Ya trae regex para correo, DPI, NIT y teléfono de Guatemala, y reemplazo de nombres a partir de
 una lista. Falta (Cami): direcciones y nombres sin lista (p. ej. NER en español), y revisar a mano

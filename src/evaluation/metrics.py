@@ -1,4 +1,4 @@
-"""Métricas técnicas con intervalos de confianza por bootstrap. Dueña: Cami (CP3); la usa Nes."""
+"""Métricas técnicas con intervalos de confianza por bootstrap."""
 import numpy as np
 from sklearn.metrics import accuracy_score, f1_score, precision_recall_fscore_support
 

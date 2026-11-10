@@ -1,0 +1,85 @@
+import pandas as pd
+import pytest
+import torch
+
+from src.config import load_config
+from src.data.split import save_splits, split_dataframe
+from src.data.synthetic import make_synthetic
+from src.evaluation.learning_curve import plot_learning_curves, run_learning_curve, stratified_subsample
+from src.evaluation.preds import write_preds
+
+
+def _data(tmp_path):
+    cfg = load_config()
+    df = make_synthetic(cfg["areas"], n_per_area=40)
+    save_splits(split_dataframe(df, cfg["split"]["ratios"], cfg["seed"]), tmp_path)
+    return cfg
+
+
+def test_subsample_is_stratified_and_nested_sizes():
+    df = make_synthetic(["a", "b", "c"], n_per_area=40)
+    for frac in (0.1, 0.5):
+        sub = stratified_subsample(df, frac, seed=1)
+        assert set(sub["area_legal"]) == {"a", "b", "c"}
+        assert len(sub) == 3 * round(40 * frac)
+    assert len(stratified_subsample(df.head(3), 0.01, seed=1)) >= 1
+
+
+def test_learning_curve_with_fake_runner_and_plot(tmp_path):
+    cfg = _data(tmp_path)
+    labels = list(cfg["areas"])
+
+    def fake_runner(cfg, split, seed, train_df, data_dir, out_dir, tag):
+        val = pd.read_csv(f"{data_dir}/val.csv")
+        probs = [[1.0 if a == t else 0.0 for a in labels] for t in val["area_legal"]]
+        wrong = len(train_df) < 50  # simula que con pocos datos el modelo falla
+        if wrong:
+            probs = [[1.0] + [0.0] * (len(labels) - 1)] * len(val)
+        path = out_dir / f"{tag}_val_preds.csv"
+        write_preds(path, val["case_id"], val["area_legal"], probs, labels)
+        return str(path)
+
+    df = run_learning_curve(fake_runner, cfg, "fake", seeds=[1, 2], data_dir=tmp_path, out_dir=tmp_path / "res")
+    assert len(df) == 4 * 2 and set(df["fraction"]) == {0.1, 0.25, 0.5, 1.0}
+    small, full = df[df["fraction"] == 0.1]["val_macro_f1"], df[df["fraction"] == 1.0]["val_macro_f1"]
+    assert small.max() < full.min()
+    # volver a correr otro modelo no borra el anterior
+    second = run_learning_curve(fake_runner, cfg, "fake2", fractions=(1.0,), data_dir=tmp_path, out_dir=tmp_path / "res")
+    assert set(second["model"]) == {"fake2"} and len(second) == 1  # devuelve solo las filas de este modelo
+    both = pd.read_csv(tmp_path / "res" / "learning_curve.csv")
+    assert set(both["model"]) == {"fake", "fake2"}
+    plot_learning_curves(both, tmp_path / "lc.png")
+    assert (tmp_path / "lc.png").stat().st_size > 0
+
+
+def test_corpus_texts_reads_paragraphs_and_skips_short_ones(tmp_path):
+    from src.models.m4_bert_dapt import corpus_texts
+    cfg = _data(tmp_path)
+    ext = tmp_path / "ext"
+    ext.mkdir()
+    (ext / "a.txt").write_text("Primer párrafo con varias palabras legales aquí.\n\ncorto\n\nSegundo párrafo también largo suficiente.", encoding="utf-8")
+    texts = corpus_texts(cfg, include_train=False, external_dir=ext)
+    assert len(texts) == 2
+    with_train = corpus_texts(cfg, include_train=True, data_dir=tmp_path, external_dir=ext)
+    assert len(with_train) > 2
+
+
+def test_dapt_runs_offline_on_tiny_bert_and_saves_a_loadable_encoder(tmp_path):
+    from transformers import AutoModel, BertConfig, BertForMaskedLM, BertTokenizerFast
+    from src.models.m4_bert_dapt import dapt
+
+    words = "el trabajador despido salario contrato demanda juez prueba ley caso de la y".split()
+    vocab = ["[PAD]", "[UNK]", "[CLS]", "[SEP]", "[MASK]"] + words
+    (tmp_path / "vocab.txt").write_text("\n".join(vocab), encoding="utf-8")
+    tok = BertTokenizerFast(str(tmp_path / "vocab.txt"), do_lower_case=True)
+    base = tmp_path / "base"
+    BertForMaskedLM(BertConfig(vocab_size=len(vocab), hidden_size=16, num_hidden_layers=2, num_attention_heads=2,
+                               intermediate_size=32, max_position_embeddings=32)).save_pretrained(base)
+    tok.save_pretrained(base)
+
+    cfg = load_config()
+    texts = ["el trabajador y el contrato de la ley"] * 6 + ["despido de la demanda y el juez"] * 6
+    info = dapt(cfg, texts, tmp_path / "out", overrides={"checkpoint": str(base), "dapt_epochs": 2,
+                                                       "dapt_batch_size": 4, "dapt_max_len": 16})
+    assert len(info["history"]) == 2 and info["mlm_head_pretrained"] is True
+    assert AutoModel.from_pretrained(tmp_path / "out").config.hidden_size == 16

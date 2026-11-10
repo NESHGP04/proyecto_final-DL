@@ -1,4 +1,4 @@
-"""División train/val/test estratificada por área. Dueña: Cami (CP2)."""
+"""División train/val/test estratificada por área."""
 import numpy as np
 import pandas as pd
 

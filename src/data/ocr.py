@@ -1,4 +1,4 @@
-"""OCR de casos físicos escaneados. Dueña: Cami (CP2).
+"""OCR de casos físicos escaneados.
 
 Pendiente: convertir cada PDF/imagen de data/raw a texto (p. ej. pdf2image + pytesseract con el
 idioma `spa`), guardar el texto en data/interim/ y marcar fuente_texto = "ocr". Medir la tasa de

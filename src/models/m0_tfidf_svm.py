@@ -1,4 +1,4 @@
-"""M0: TF-IDF + SVM lineal (referencia sin deep learning). Dueña: Cami (CP3).
+"""M0: TF-IDF + SVM lineal (referencia sin deep learning).
 
 Uso: python -m src.models.m0_tfidf_svm --split val
 El split `test` solo con --final (evaluación final con configuración congelada).

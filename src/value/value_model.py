@@ -1,4 +1,4 @@
-"""Modelo de valor (docs/CONTEXTO.md sección 5). Dueña: Cami (CP4).
+"""Modelo de valor (docs/CONTEXTO.md sección 5).
 
 Valor(τ) = N·κ(τ)·(t_m/60)·c_h − N·κ(τ)·[(1 − p(τ)) − e_0]·c_err − C_op
 

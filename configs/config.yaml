@@ -61,3 +61,11 @@ models:
     batch_size: 16
     epochs: 5
     patience: 2          # early stopping por F1 macro en val
+  m4:                      # M3 + adaptación de dominio; el fine-tuning final usa los hiperparámetros de m3
+    dapt_lr: 5.0e-5
+    dapt_epochs: 3
+    dapt_batch_size: 16
+    dapt_max_len: 256
+    mlm_probability: 0.15
+    include_train_texts: true   # usar también los textos de train (sin etiquetas) para la adaptación
+    external_glob: "**/*.txt"   # corpus legal público en data/external/ (un caso o texto por párrafo)
