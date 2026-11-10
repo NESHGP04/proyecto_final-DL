@@ -41,6 +41,11 @@ class BertClassifier(nn.Module):
         hidden = self.encoder(input_ids=input_ids, attention_mask=attention_mask).last_hidden_state
         return self.head(self.drop(pool(hidden, attention_mask, self.pooling)))
 
+    def forward_embeds(self, inputs_embeds, attention_mask):
+        """Igual que forward pero desde embeddings de entrada (para gradientes integrados)."""
+        hidden = self.encoder(inputs_embeds=inputs_embeds, attention_mask=attention_mask).last_hidden_state
+        return self.head(self.drop(pool(hidden, attention_mask, self.pooling)))
+
 
 def build_param_groups(model, lr, layer_decay, weight_decay):
     """Grupos de parámetros con tasa menor en las capas inferiores.
@@ -144,6 +149,20 @@ def fit(model, train_data, y_train, val_data, y_val, mc, device, seed=42):
             break
     model.load_state_dict(best_state)
     return history, best_epoch
+
+
+def load_finetuned(cfg, model_id="m3", checkpoint=None, weights_dir=None, device="cpu"):
+    """Reconstruye (tokenizador, modelo) desde los pesos guardados con --save. Para M4 pasar
+    checkpoint=<artifacts/m4_dapt>, que es el encoder con el que se hizo el fine-tuning."""
+    from transformers import AutoModel, AutoTokenizer
+
+    mc = cfg["models"]["m3"]
+    checkpoint = str(checkpoint or mc["checkpoint"])
+    tok = AutoTokenizer.from_pretrained(checkpoint)
+    model = BertClassifier(AutoModel.from_pretrained(checkpoint), len(cfg["areas"]), mc["pooling"], mc["dropout"])
+    weights = Path(weights_dir or path_of(cfg, "artifacts")) / f"{model_id}.pt"
+    model.load_state_dict(torch.load(weights, map_location="cpu"))
+    return tok, model.to(device).eval()
 
 
 def run(cfg, eval_split="val", final=False, seed=None, train_df=None, data_dir=None, out_dir=None,

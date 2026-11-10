@@ -23,6 +23,10 @@ split:
   ratios: {train: 0.70, val: 0.15, test: 0.15}
   temporal: false   # true si hay fechas confiables: test = lo más reciente
 
+serving:
+  model: m3             # m3 o m4: pesos guardados con --save en artifacts/
+  max_text_chars: 20000 # la API rechaza textos más largos
+
 confidence_threshold: 0.70   # τ de partida; el óptimo se elige con la curva de valor
 
 # Hiperparámetros iniciales (se ajustan solo con val)

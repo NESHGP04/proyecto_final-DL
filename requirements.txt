@@ -16,3 +16,4 @@ streamlit
 pytesseract
 pdf2image
 pytest
+httpx==0.28.1   # solo para los tests de la API (TestClient)

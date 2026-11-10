@@ -148,8 +148,40 @@ def train_head(X_train, y_train, X_val, y_val, n_classes, lr=1e-3, epochs=20, ba
     return Head(mean, std, linear.eval()), history, best_epoch
 
 
+class FrozenClassifier(torch.nn.Module):
+    """Encoder congelado + pooling + estandarización + cabeza lineal, diferenciable de punta a punta
+    (para explicar M2 con gradientes integrados). Equivale a embed_texts + Head.predict_proba."""
+
+    def __init__(self, encoder, linear, mean, std, pooling="mean"):
+        super().__init__()
+        self.encoder, self.linear, self.pooling = encoder, linear, pooling
+        self.register_buffer("mean", torch.as_tensor(mean, dtype=torch.float32))
+        self.register_buffer("std", torch.as_tensor(std, dtype=torch.float32))
+
+    def forward_embeds(self, inputs_embeds, attention_mask):
+        hidden = self.encoder(inputs_embeds=inputs_embeds, attention_mask=attention_mask).last_hidden_state
+        return self.linear((pool(hidden, attention_mask, self.pooling) - self.mean) / self.std)
+
+    def forward(self, input_ids, attention_mask):
+        hidden = self.encoder(input_ids=input_ids, attention_mask=attention_mask).last_hidden_state
+        return self.linear((pool(hidden, attention_mask, self.pooling) - self.mean) / self.std)
+
+
+def load_frozen(cfg, weights_dir=None, model_id="m2_head", device="cpu"):
+    """Reconstruye (tokenizador, FrozenClassifier) desde la cabeza guardada con save=True."""
+    from transformers import AutoModel, AutoTokenizer
+
+    mc = cfg["models"]["m2"]
+    saved = torch.load(Path(weights_dir or path_of(cfg, "artifacts")) / f"{model_id}.pt", map_location="cpu")
+    encoder = AutoModel.from_pretrained(mc["checkpoint"]).eval()
+    linear = torch.nn.Linear(encoder.config.hidden_size, len(cfg["areas"]))
+    linear.load_state_dict(saved["linear"])
+    model = FrozenClassifier(encoder, linear, saved["mean"], saved["std"], mc["pooling"])
+    return AutoTokenizer.from_pretrained(mc["checkpoint"]), model.to(device).eval()
+
+
 def run(cfg, eval_split="val", final=False, seed=None, train_df=None, data_dir=None, out_dir=None, cache_dir=None,
-        tag=None):
+        tag=None, save=False):
     seed = cfg["seed"] if seed is None else seed
     mc = cfg["models"]["m2"]
     areas = list(cfg["areas"])
@@ -185,6 +217,10 @@ def run(cfg, eval_split="val", final=False, seed=None, train_df=None, data_dir=N
     preds_path = out_dir / f"{model_id}_{eval_split}_preds.csv"
     write_preds(preds_path, ev["case_id"], ev["area_legal"], probs, areas)
 
+    if save:  # la cabeza (4.614 parámetros) basta para reconstruir M2 con load_frozen
+        torch.save({"linear": head.linear.state_dict(), "mean": torch.as_tensor(head.mean), "std": torch.as_tensor(head.std),
+                    "areas": areas, "checkpoint": mc["checkpoint"], "pooling": mc["pooling"]},
+                   path_of(cfg, "artifacts") / f"{model_id}_head.pt")
     n_head = sum(p.numel() for p in head.linear.parameters())
     info = {
         "model": model_id, "checkpoint": mc["checkpoint"], "pooling": mc["pooling"], "seed": seed,
@@ -204,5 +240,6 @@ if __name__ == "__main__":
     ap.add_argument("--split", default="val", choices=["val", "test"])
     ap.add_argument("--final", action="store_true")
     ap.add_argument("--seed", type=int, default=None)
+    ap.add_argument("--save", action="store_true", help="guardar la cabeza en artifacts/ (para explicabilidad)")
     args = ap.parse_args()
-    print(run(load_config(), args.split, final=args.final, seed=args.seed))
+    print(run(load_config(), args.split, final=args.final, seed=args.seed, save=args.save))
