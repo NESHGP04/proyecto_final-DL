@@ -4,6 +4,8 @@ Para cada fracción y semilla se entrena el modelo con una submuestra estratific
 mide el F1 macro en val. Muestra cuándo el transfer learning ayuda (pocos datos) y cuándo deja de
 ayudar. Con M3 cada punto es un fine-tuning completo: conviene 1 semilla, o correrlo en Colab.
 
+Los puntos ya hechos se reutilizan (se puede reanudar), y el 100 % reusa la corrida principal del modelo.
+
 Uso: python -m src.evaluation.learning_curve --model m1 --seeds 42 43 44
      python -m src.evaluation.learning_curve --plot-only
 """
@@ -32,8 +34,20 @@ def stratified_subsample(df, frac, seed=42, label_col="area_legal"):
     return df.loc[sorted(keep)]
 
 
+def _existing(results, runs_dir, model_name, tag, frac, seed, main_seed, force):
+    """Predicciones ya hechas que se pueden reutilizar: este mismo punto (si se cortó la corrida) o,
+    para el 100 %, la corrida principal del modelo (así la curva coincide con la tabla del informe)."""
+    if force:
+        return None
+    candidates = [runs_dir / f"{tag}_val_preds.csv"]
+    if frac >= 1.0:
+        main = model_name if seed == main_seed else f"{model_name}_s{seed}"
+        candidates.append(results / f"{main}_val_preds.csv")
+    return next((str(c) for c in candidates if c.exists()), None)
+
+
 def run_learning_curve(model_runner, cfg, model_name, fractions=FRACTIONS, seeds=None, data_dir=None,
-                       out_dir=None):
+                       out_dir=None, force=False):
     """Entrena `model_runner` con cada fracción de train y evalúa en val. Devuelve un DataFrame con las filas de este modelo.
 
     model_runner(cfg, "val", seed=, train_df=, data_dir=, out_dir=, tag=) debe escribir las
@@ -52,7 +66,9 @@ def run_learning_curve(model_runner, cfg, model_name, fractions=FRACTIONS, seeds
         for seed in seeds:
             sub = train if frac >= 1.0 else stratified_subsample(train, frac, seed=seed)
             tag = f"{model_name}_f{int(round(frac * 100))}_s{seed}"
-            path = model_runner(cfg, "val", seed=seed, train_df=sub, data_dir=data_dir, out_dir=runs_dir, tag=tag)
+            path = _existing(results, runs_dir, model_name, tag, frac, seed, cfg["seed"], force)
+            if path is None:
+                path = model_runner(cfg, "val", seed=seed, train_df=sub, data_dir=data_dir, out_dir=runs_dir, tag=tag)
             preds = read_preds(path)
             m = compute_metrics(preds["y_true"], preds["y_pred"], labels)
             rows.append({"model": model_name, "fraction": frac, "n_train": len(sub), "seed": seed,
@@ -67,6 +83,15 @@ def run_learning_curve(model_runner, cfg, model_name, fractions=FRACTIONS, seeds
     return this_model
 
 
+def merge_curves(csv, other):
+    """Incorpora al CSV las filas de los modelos que trae `other` (reemplaza las de esos modelos)."""
+    new = pd.read_csv(other)
+    base = pd.read_csv(csv) if Path(csv).exists() else new.iloc[0:0]
+    merged = pd.concat([base[~base["model"].isin(new["model"])], new], ignore_index=True)
+    merged.to_csv(csv, index=False)
+    return merged
+
+
 def plot_learning_curves(df, path):
     """F1 macro en val vs. número de casos de entrenamiento: media ± desvío entre semillas por modelo."""
     import matplotlib
@@ -79,8 +104,14 @@ def plot_learning_curves(df, path):
         agg = g.groupby("n_train")["val_macro_f1"].agg(["mean", "std"]).fillna(0).reset_index()
         ax.plot(agg["n_train"], agg["mean"], marker="o", label=model)
         ax.fill_between(agg["n_train"], agg["mean"] - agg["std"], agg["mean"] + agg["std"], alpha=0.2)
-    ax.set(xlabel="casos de entrenamiento", ylabel="F1 macro en val", ylim=(0, 1.02), title="Curva de aprendizaje")
+    ax.set(xlabel="casos de entrenamiento (escala log)", ylabel="F1 macro en val", title="Curva de aprendizaje")
     ax.set_xscale("log")
+    sizes = sorted(df["n_train"].unique())
+    ax.set_xticks(sizes, [f"{n:,}".replace(",", ".") for n in sizes])
+    ax.minorticks_off()
+    ax.grid(alpha=0.3)
+    lo, hi = df["val_macro_f1"].min(), df["val_macro_f1"].max()
+    ax.set_ylim(max(0, lo - 0.05), min(1.0, hi + 0.05))
     ax.legend()
     fig.tight_layout()
     fig.savefig(path, dpi=130)
@@ -104,11 +135,17 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--model", choices=["m1", "m2", "m3"])
     ap.add_argument("--seeds", type=int, nargs="+")
+    ap.add_argument("--fractions", type=float, nargs="+", help="por defecto 0.1 0.25 0.5 1.0")
+    ap.add_argument("--force", action="store_true", help="repetir puntos ya hechos")
+    ap.add_argument("--merge", help="otro learning_curve.csv (p. ej. el de Colab con M3) cuyas filas se incorporan")
     ap.add_argument("--plot-only", action="store_true")
     args = ap.parse_args()
     cfg = load_config()
     results = path_of(cfg, "results")
     if not args.plot_only:
-        run_learning_curve(_runner(args.model), cfg, args.model, seeds=args.seeds)
+        run_learning_curve(_runner(args.model), cfg, args.model, seeds=args.seeds, force=args.force,
+                           fractions=tuple(args.fractions) if args.fractions else FRACTIONS)
+    if args.merge:
+        merge_curves(results / CSV_NAME, args.merge)
     plot_learning_curves(pd.read_csv(results / CSV_NAME), results / "learning_curve.png")
     print(results / "learning_curve.png")

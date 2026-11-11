@@ -52,6 +52,34 @@ def test_learning_curve_with_fake_runner_and_plot(tmp_path):
     assert (tmp_path / "lc.png").stat().st_size > 0
 
 
+def test_learning_curve_reuses_done_points_and_main_run_for_100_percent(tmp_path):
+    cfg = _data(tmp_path)
+    labels = list(cfg["areas"])
+    calls = []
+
+    def runner(cfg, split, seed, train_df, data_dir, out_dir, tag):
+        calls.append(tag)
+        val = pd.read_csv(f"{data_dir}/val.csv")
+        probs = [[1.0 if a == t else 0.0 for a in labels] for t in val["area_legal"]]
+        path = out_dir / f"{tag}_val_preds.csv"
+        write_preds(path, val["case_id"], val["area_legal"], probs, labels)
+        return str(path)
+
+    res = tmp_path / "res"
+    res.mkdir()
+    val = pd.read_csv(tmp_path / "val.csv")
+    probs = [[1.0 if a == t else 0.0 for a in labels] for t in val["area_legal"]]
+    write_preds(res / "fake_val_preds.csv", val["case_id"], val["area_legal"], probs, labels)  # corrida principal
+
+    seed = cfg["seed"]
+    run_learning_curve(runner, cfg, "fake", fractions=(0.5, 1.0), seeds=[seed], data_dir=tmp_path, out_dir=res)
+    assert calls == [f"fake_f50_s{seed}"]          # el 100 % reutiliza la corrida principal
+    run_learning_curve(runner, cfg, "fake", fractions=(0.5, 1.0), seeds=[seed], data_dir=tmp_path, out_dir=res)
+    assert len(calls) == 1                         # reanudar no repite lo hecho
+    run_learning_curve(runner, cfg, "fake", fractions=(0.5,), seeds=[seed], data_dir=tmp_path, out_dir=res, force=True)
+    assert len(calls) == 2                         # --force sí repite
+
+
 def test_corpus_texts_reads_paragraphs_and_skips_short_ones(tmp_path):
     from src.models.m4_bert_dapt import corpus_texts
     cfg = _data(tmp_path)
@@ -83,3 +111,14 @@ def test_dapt_runs_offline_on_tiny_bert_and_saves_a_loadable_encoder(tmp_path):
                                                        "dapt_batch_size": 4, "dapt_max_len": 16})
     assert len(info["history"]) == 2 and info["mlm_head_pretrained"] is True
     assert AutoModel.from_pretrained(tmp_path / "out").config.hidden_size == 16
+
+
+def test_merge_curves_replaces_only_models_in_other_file(tmp_path):
+    from src.evaluation.learning_curve import merge_curves
+    row = {"fraction": 1.0, "n_train": 10, "seed": 1, "val_accuracy": 0.5}
+    pd.DataFrame([{"model": "m1", "val_macro_f1": 0.5, **row}, {"model": "m3", "val_macro_f1": 0.1, **row}]).to_csv(
+        tmp_path / "a.csv", index=False)
+    pd.DataFrame([{"model": "m3", "val_macro_f1": 0.9, **row}]).to_csv(tmp_path / "b.csv", index=False)
+    merged = merge_curves(tmp_path / "a.csv", tmp_path / "b.csv")
+    assert dict(zip(merged["model"], merged["val_macro_f1"])) == {"m1": 0.5, "m3": 0.9}
+    assert len(merged) == 2
