@@ -1,0 +1,380 @@
+[
+ {
+  "case_id": "J-lab-00001",
+  "area": "laboral",
+  "top": {
+   "m2": [
+    ",",
+    ",",
+    ",",
+    ",",
+    ","
+   ],
+   "m3": [
+    "trabajo",
+    "seguridad",
+    "empleadora",
+    "trabajador",
+    "el"
+   ]
+  },
+  "overlap": 0.0
+ },
+ {
+  "case_id": "J-lab-00015",
+  "area": "laboral",
+  "top": {
+   "m2": [
+    "trabajador",
+    "incapacidad",
+    "p",
+    "trabajo",
+    "T"
+   ],
+   "m3": [
+    "trabajador",
+    "trabajo",
+    "contrato",
+    "el",
+    "que"
+   ]
+  },
+  "overlap": 0.25
+ },
+ {
+  "case_id": "J-lab-00017",
+  "area": "laboral",
+  "top": {
+   "m2": [
+    "empleador",
+    "intimación",
+    "intimación",
+    "alegada",
+    "013"
+   ],
+   "m3": [
+    "empleador",
+    "PERSONAL",
+    "ley",
+    "el",
+    "intimación"
+   ]
+  },
+  "overlap": 0.2857142857142857
+ },
+ {
+  "case_id": "J-civ-00016",
+  "area": "civil",
+  "top": {
+   "m2": [
+    "del",
+    "de",
+    "muebles",
+    "le",
+    "de"
+   ],
+   "m3": [
+    "Civil",
+    "CT001",
+    "Código",
+    "uuid",
+    "donados"
+   ]
+  },
+  "overlap": 0.0
+ },
+ {
+  "case_id": "J-civ-00030",
+  "area": "civil",
+  "top": {
+   "m2": [
+    "fin",
+    "ende",
+    "indemnizatorio",
+    "ocasionado",
+    "reparación"
+   ],
+   "m3": [
+    "judicial",
+    "dañoso",
+    "decisión",
+    "ocasionado",
+    "caracterizante"
+   ]
+  },
+  "overlap": 0.1111111111111111
+ },
+ {
+  "case_id": "J-civ-00049",
+  "area": "civil",
+  "top": {
+   "m2": [
+    ",",
+    ",",
+    "conf",
+    ",",
+    "de"
+   ],
+   "m3": [
+    "prestación",
+    ".",
+    "separación",
+    "marido",
+    "mujer"
+   ]
+  },
+  "overlap": 0.0
+ },
+ {
+  "case_id": "J-mer-00003",
+  "area": "mercantil",
+  "top": {
+   "m2": [
+    "agencia",
+    "comercio",
+    "regreso",
+    "código",
+    "siquiera"
+   ],
+   "m3": [
+    "contrató",
+    "agencia",
+    "imprudencia",
+    "pasajera",
+    "barco"
+   ]
+  },
+  "overlap": 0.1111111111111111
+ },
+ {
+  "case_id": "J-mer-00004",
+  "area": "mercantil",
+  "top": {
+   "m2": [
+    "actualización",
+    "contingencias",
+    "demanda",
+    "procesales",
+    "frente"
+   ],
+   "m3": [
+    "cciv",
+    "624",
+    "régimen",
+    "del",
+    "norma"
+   ]
+  },
+  "overlap": 0.0
+ },
+ {
+  "case_id": "J-mer-00005",
+  "area": "mercantil",
+  "top": {
+   "m2": [
+    "inconstitucionalidad",
+    "ley",
+    "violan",
+    "cheques",
+    "ley"
+   ],
+   "m3": [
+    "cheques",
+    "Banco",
+    "ley",
+    "violan",
+    "legislación"
+   ]
+  },
+  "overlap": 0.5
+ },
+ {
+  "case_id": "J-pen-00016",
+  "area": "penal",
+  "top": {
+   "m2": [
+    "PERSONAL",
+    "MINORIA",
+    "OPINION",
+    "Procesal",
+    "Penal"
+   ],
+   "m3": [
+    "Penal",
+    "penal",
+    "proceso",
+    "Procedimiento",
+    "Código"
+   ]
+  },
+  "overlap": 0.1111111111111111
+ },
+ {
+  "case_id": "J-pen-00027",
+  "area": "penal",
+  "top": {
+   "m2": [
+    ".",
+    "domiciliario",
+    "penal",
+    "materno",
+    "arresto"
+   ],
+   "m3": [
+    "penal",
+    "domiciliario",
+    "arresto",
+    "ley",
+    "desmedro"
+   ]
+  },
+  "overlap": 0.42857142857142855
+ },
+ {
+  "case_id": "J-pen-00049",
+  "area": "penal",
+  "top": {
+   "m2": [
+    "CPP",
+    "balístico",
+    "balística",
+    "acusado",
+    "presenciar"
+   ],
+   "m3": [
+    "acusado",
+    "presenciar",
+    "balística",
+    "alegada",
+    "pericia"
+   ]
+  },
+  "overlap": 0.42857142857142855
+ },
+ {
+  "case_id": "J-fam-00006",
+  "area": "familia",
+  "top": {
+   "m2": [
+    "p",
+    "alimentos",
+    "p",
+    "progenitores",
+    "padre"
+   ],
+   "m3": [
+    "alimentaria",
+    "madre",
+    "hijos",
+    "alimentos",
+    "obligación"
+   ]
+  },
+  "overlap": 0.125
+ },
+ {
+  "case_id": "J-fam-00011",
+  "area": "familia",
+  "top": {
+   "m2": [
+    "p",
+    "familia",
+    ",",
+    ",",
+    "p"
+   ],
+   "m3": [
+    "divorcio",
+    "divorcio",
+    "familia",
+    "esposos",
+    "juicios"
+   ]
+  },
+  "overlap": 0.16666666666666666
+ },
+ {
+  "case_id": "J-fam-00017",
+  "area": "familia",
+  "top": {
+   "m2": [
+    "p",
+    ",",
+    "hogar",
+    "conyugal",
+    ","
+   ],
+   "m3": [
+    "divorcio",
+    "matrimonio",
+    "decretar",
+    "conyugal",
+    "esposos"
+   ]
+  },
+  "overlap": 0.125
+ },
+ {
+  "case_id": "J-otr-00004",
+  "area": "otros",
+  "top": {
+   "m2": [
+    ",",
+    ",",
+    "manifiestos",
+    "]",
+    "cuestiones"
+   ],
+   "m3": [
+    "previsional",
+    "subsistencia",
+    "créditos",
+    "ayuda",
+    "ancianidad"
+   ]
+  },
+  "overlap": 0.0
+ },
+ {
+  "case_id": "J-otr-00010",
+  "area": "otros",
+  "top": {
+   "m2": [
+    "El",
+    "establecidos",
+    "tributos",
+    "decir",
+    "las"
+   ],
+   "m3": [
+    "tributos",
+    "683",
+    "ley",
+    "transcripta",
+    "leyes"
+   ]
+  },
+  "overlap": 0.1111111111111111
+ },
+ {
+  "case_id": "J-otr-00019",
+  "area": "otros",
+  "top": {
+   "m2": [
+    "(",
+    "debiendo",
+    "del",
+    "las",
+    "año"
+   ],
+   "m3": [
+    "Impuesto",
+    "Impuesto",
+    "impuesto",
+    "Lucrativas",
+    "Fiscal"
+   ]
+  },
+  "overlap": 0.0
+ }
+]
