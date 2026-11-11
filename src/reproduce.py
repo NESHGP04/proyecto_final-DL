@@ -9,6 +9,9 @@ configuración ya congelada: el umbral τ se elige con las predicciones de val d
 con las de test) y se aplica a test. Si ya existen predicciones de test, `final` se niega a correr
 salvo `--again`, que hay que declarar en el informe.
 
+Es reanudable: si se corta (p. ej. Colab), volver a lanzar el mismo comando omite lo ya terminado y M3
+continúa desde su último checkpoint de época. `--force` repite todo.
+
 Salida: experiments/results/summary_<stage>.md (F1 macro con IC, exactitud, recall por clase, valor
 mensual, deltas entre versiones y costos). El modelo de valor usa configs/value_params.yaml.
 """
@@ -49,11 +52,31 @@ def _id(model, seed, cfg):
     return model if model == "m0" or seed == cfg["seed"] else f"{model}_s{seed}"
 
 
-def _train(cfg, model, split, seed, final, data_dir, out_dir):
+def _finished(out, mid, split, n_train, seed):
+    """Ruta de las predicciones si esa corrida ya terminó con los mismos datos y semilla, si no None."""
+    preds, info = Path(out) / f"{mid}_{split}_preds.csv", Path(out) / f"{mid}_{split}_run.json"
+    if preds.exists() and info.exists():
+        prev = json.loads(info.read_text(encoding="utf-8"))
+        if prev.get("n_train") == n_train and prev.get("seed") == seed:
+            return str(preds)
+    return None
+
+
+def _train(cfg, model, split, seed, final, data_dir, out_dir, n_train, force=False):
+    """Entrena y evalúa un modelo. Si esa corrida ya terminó (mismos datos y semilla) la omite, para que
+    reanudar tras un corte solo requiera volver a lanzar el mismo comando; --force la repite."""
+    mid = _id(model, seed, cfg)
+    if model != "m0" and not force and (done := _finished(out_dir, mid, split, n_train, seed)):
+        print(f"{mid} ({split}) ya está terminado: se omite", flush=True)
+        return done
     run = _runner(model)
     kw = {"data_dir": data_dir, "out_dir": out_dir}
     if model != "m0":
         kw["seed"] = seed
+    if model in ("m2", "m3"):
+        kw["save"] = seed == cfg["seed"]  # cabeza o pesos del modelo principal, para explicabilidad y API
+    if model == "m3":  # un checkpoint por época en artifacts/ckpt (en Colab, en Drive)
+        kw.update(ckpt_dir=path_of(cfg, "artifacts") / "ckpt" / f"{mid}_{split}", resume=not force)
     return run(cfg, split, final=final, **kw)
 
 
@@ -62,7 +85,7 @@ def _fmt_ci(f1, ci):
 
 
 def reproduce(cfg, stage="val", models=None, seeds=None, data_dir=None, out_dir=None,
-              confirm_frozen=False, again=False, n_boot=1000):
+              confirm_frozen=False, again=False, n_boot=1000, force=False):
     models = models or [m for m in ALL_MODELS if m != "m4"]
     seeds = list(seeds) if seeds else [cfg["seed"]]
     out = Path(out_dir or path_of(cfg, "results"))
@@ -78,12 +101,14 @@ def reproduce(cfg, stage="val", models=None, seeds=None, data_dir=None, out_dir=
         if list(out.glob("*_test_preds.csv")) and not again:
             raise SystemExit("ya hay predicciones de test: el test se usa una sola vez (--again lo permite; declararlo en el informe)")
 
+    from src.data.dataset import load_split
+    n_train = len(load_split(cfg, "train", data_dir=data_dir))
     primary = {}
     spread = {}
     for m in models:
         f1s = []
         for seed in (seeds if m != "m0" else seeds[:1]):
-            path = _train(cfg, m, split, seed, final, data_dir, out)
+            path = _train(cfg, m, split, seed, final, data_dir, out, n_train, force)
             p = read_preds(path)
             f1s.append(compute_metrics(p["y_true"], p["y_pred"], labels)["macro_f1"])
             if seed == seeds[0]:
@@ -141,5 +166,7 @@ if __name__ == "__main__":
     ap.add_argument("--seeds", type=int, nargs="+")
     ap.add_argument("--confirm-frozen", action="store_true")
     ap.add_argument("--again", action="store_true")
+    ap.add_argument("--force", action="store_true", help="repetir también las corridas ya terminadas")
     a = ap.parse_args()
-    print(reproduce(load_config(), a.stage, a.models, a.seeds, confirm_frozen=a.confirm_frozen, again=a.again))
+    print(reproduce(load_config(), a.stage, a.models, a.seeds, confirm_frozen=a.confirm_frozen, again=a.again,
+                    force=a.force))

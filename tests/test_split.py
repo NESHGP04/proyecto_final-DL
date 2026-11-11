@@ -34,3 +34,11 @@ def test_tiny_class_does_not_crash():
     df = make_synthetic(["laboral"], n_per_area=2)
     out = split_dataframe(df, RATIOS, seed=1)
     assert len(out) == 2
+
+
+def test_paths_can_be_overridden_with_environment_variables(monkeypatch, tmp_path):
+    from src.config import load_config, path_of
+    monkeypatch.setenv("DL_PATH_RESULTS", str(tmp_path / "drive" / "results"))
+    cfg = load_config()
+    assert path_of(cfg, "results") == tmp_path / "drive" / "results"
+    assert str(path_of(cfg, "processed")).endswith("data/processed")  # lo demás no cambia

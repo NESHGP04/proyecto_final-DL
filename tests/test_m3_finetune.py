@@ -1,3 +1,5 @@
+import json
+
 import numpy as np
 import pandas as pd
 import pytest
@@ -69,3 +71,84 @@ def test_compare_models_reports_delta_and_checks_same_cases():
     assert "M2 → M3" in to_markdown(res)
     with pytest.raises(ValueError):
         compare_models(good, good.iloc[:50], labels)
+
+
+# ---------- checkpoints y reanudación ----------
+class _Crash(Exception):
+    pass
+
+
+def _mc(**kw):
+    return {**load_config()["models"]["m3"], "lr": 3e-3, "epochs": 4, "batch_size": 8, "patience": 10, **kw}
+
+
+def _seeded_tiny():
+    torch.manual_seed(0)
+    return tiny_classifier()
+
+
+def _fit(model, mc, ckpt=None, after=None, info=None):
+    ids, mask, y = _toy()
+    tr, va = slice(None, None, 2), slice(1, None, 2)
+    return fit(model, (ids[tr], mask[tr]), y[tr], (ids[va], mask[va]), y[va], mc, "cpu", seed=1,
+               ckpt_dir=ckpt, after_epoch=after, info=info)
+
+
+def _same(hist_a, hist_b):
+    keys = ("epoch", "train_loss", "val_loss", "val_macro_f1")
+    return all(abs(a[k] - b[k]) < 1e-5 for a, b in zip(hist_a, hist_b) for k in keys) and len(hist_a) == len(hist_b)
+
+
+def test_resume_after_crash_matches_uninterrupted_run(tmp_path):
+    mc = _mc()
+    model_a = _seeded_tiny()
+    hist_a, best_a = _fit(model_a, mc, tmp_path / "a")
+
+    def boom(epoch):
+        if epoch == 2:
+            raise _Crash
+
+    with pytest.raises(_Crash):
+        _fit(_seeded_tiny(), mc, tmp_path / "b", after=boom)
+    assert (tmp_path / "b" / "state.pt").exists() and not list((tmp_path / "b").glob("*.tmp"))
+    status = json.loads((tmp_path / "b" / "status.json").read_text(encoding="utf-8"))
+    assert status["epoca"] == 2 and status["terminado"] is False
+
+    info, model_c = {}, _seeded_tiny()
+    hist_c, best_c = _fit(model_c, mc, tmp_path / "b", info=info)
+    assert info["resumed_from_epoch"] == 2 and best_c == best_a and _same(hist_a, hist_c)
+    for (k, a), (_, c) in zip(model_a.state_dict().items(), model_c.state_dict().items()):
+        assert torch.allclose(a, c, atol=1e-5), k
+
+
+def test_resume_of_a_finished_checkpoint_does_not_train_again(tmp_path):
+    mc = _mc(epochs=3)
+    hist, best = _fit(_seeded_tiny(), mc, tmp_path / "x")
+    info = {}
+    hist2, best2 = _fit(_seeded_tiny(), mc, tmp_path / "x", info=info)
+    assert info["resumed_from_epoch"] == 3 and _same(hist, hist2) and best == best2
+
+
+def test_checkpoint_from_another_configuration_is_rejected(tmp_path):
+    _fit(_seeded_tiny(), _mc(epochs=2), tmp_path / "x")
+    with pytest.raises(ValueError, match="otra configuración"):
+        _fit(_seeded_tiny(), _mc(epochs=2, lr=1e-3), tmp_path / "x")
+
+
+def test_run_skips_a_finished_run_without_loading_the_model(tmp_path):
+    from src.data.make_splits import make_splits  # noqa: F401  (solo para dejar claro que usa splits en disco)
+    from src.data.split import save_splits, split_dataframe
+    from src.data.synthetic import make_synthetic
+    from src.models.m3_bert_finetune import run
+
+    cfg = load_config()
+    data = tmp_path / "data"
+    data.mkdir()
+    df = make_synthetic(cfg["areas"], n_per_area=10)
+    save_splits(split_dataframe(df, cfg["split"]["ratios"], cfg["seed"]), data)
+    n_train = len(pd.read_csv(data / "train.csv"))
+    res = tmp_path / "res"
+    res.mkdir()
+    (res / "m3_val_preds.csv").write_text("case_id\n", encoding="utf-8")
+    (res / "m3_val_run.json").write_text(json.dumps({"n_train": n_train, "seed": cfg["seed"]}), encoding="utf-8")
+    assert run(cfg, "val", data_dir=data, out_dir=res) == str(res / "m3_val_preds.csv")  # no tocó el modelo

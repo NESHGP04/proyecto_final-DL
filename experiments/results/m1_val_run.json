@@ -1,0 +1,105 @@
+{
+ "model": "m1",
+ "seed": 42,
+ "hparams": {
+  "max_len": 256,
+  "embed_dim": 128,
+  "filters": 100,
+  "kernel_sizes": [
+   3,
+   4,
+   5
+  ],
+  "dropout": 0.5,
+  "lr": 0.001,
+  "weight_decay": 0.01,
+  "batch_size": 32
+ },
+ "n_train": 12600,
+ "vocab_size": 20000,
+ "best_epoch": 6,
+ "epochs_run": 11,
+ "best_val_macro_f1": 0.7465477295018217,
+ "trainable_params": 2715706,
+ "train_seconds": 594.82,
+ "inference_ms_per_text": 0.596,
+ "history": [
+  {
+   "epoch": 1,
+   "train_loss": 1.6196787626402718,
+   "val_loss": 1.1384708881378174,
+   "train_macro_f1": 0.6494011341818812,
+   "val_macro_f1": 0.5829181798276194
+  },
+  {
+   "epoch": 2,
+   "train_loss": 1.1193649071738834,
+   "val_loss": 0.9200354218482971,
+   "train_macro_f1": 0.7595831901968496,
+   "val_macro_f1": 0.6779285499551895
+  },
+  {
+   "epoch": 3,
+   "train_loss": 0.9118654277589586,
+   "val_loss": 0.8475164771080017,
+   "train_macro_f1": 0.8208062528479839,
+   "val_macro_f1": 0.7020643833423311
+  },
+  {
+   "epoch": 4,
+   "train_loss": 0.7658510818557134,
+   "val_loss": 0.7857005000114441,
+   "train_macro_f1": 0.8803565359443674,
+   "val_macro_f1": 0.7305352643973223
+  },
+  {
+   "epoch": 5,
+   "train_loss": 0.6454139485813323,
+   "val_loss": 0.7731068730354309,
+   "train_macro_f1": 0.914854881859057,
+   "val_macro_f1": 0.7395184530788078
+  },
+  {
+   "epoch": 6,
+   "train_loss": 0.518464239476219,
+   "val_loss": 0.7748135924339294,
+   "train_macro_f1": 0.9510769145594603,
+   "val_macro_f1": 0.7465477295018217
+  },
+  {
+   "epoch": 7,
+   "train_loss": 0.40891940493432305,
+   "val_loss": 0.8028292655944824,
+   "train_macro_f1": 0.9736892861087786,
+   "val_macro_f1": 0.7343780908416475
+  },
+  {
+   "epoch": 8,
+   "train_loss": 0.31402576230821155,
+   "val_loss": 0.8277844786643982,
+   "train_macro_f1": 0.9888051729190105,
+   "val_macro_f1": 0.7345865279211076
+  },
+  {
+   "epoch": 9,
+   "train_loss": 0.23627091663224356,
+   "val_loss": 0.8638980388641357,
+   "train_macro_f1": 0.9936478831008418,
+   "val_macro_f1": 0.7453234856984644
+  },
+  {
+   "epoch": 10,
+   "train_loss": 0.18516942742561537,
+   "val_loss": 0.9188522100448608,
+   "train_macro_f1": 0.9966659896591544,
+   "val_macro_f1": 0.7378609662488492
+  },
+  {
+   "epoch": 11,
+   "train_loss": 0.16390276605647708,
+   "val_loss": 0.9381739497184753,
+   "train_macro_f1": 0.997381588144223,
+   "val_macro_f1": 0.740808708934587
+  }
+ ]
+}

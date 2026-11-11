@@ -75,7 +75,11 @@ Las áreas, semillas, rutas e hiperparámetros están en `configs/config.yaml`; 
 
 Ambos escriben `experiments/results/summary_<etapa>.md` con F1 macro e intervalo de confianza, exactitud, recall por clase, valor mensual, deltas entre versiones con intervalo pareado y costos.
 
-M3 tarda mucho en un Mac; hay un cuaderno para Colab con GPU en `notebooks/colab_m3.ipynb`.
+M3 tarda mucho en un Mac; se corre en Colab con GPU con `notebooks/colab_m3.ipynb` y es **reanudable**: guarda un checkpoint por época en Google Drive (variables de entorno `DL_PATH_RESULTS` y `DL_PATH_ARTIFACTS`) y, si la sesión se corta, volver a lanzar el mismo comando omite lo terminado y continúa desde la última época. El paquete que se sube a Drive se genera con:
+
+```bash
+python -m src.colab_bundle    # artifacts/colab_bundle.zip: código, configuración, train/val y resultados de M0 a M2 (sin test ni datos del bufete)
+```
 
 Otras piezas, cada una con su comando:
 

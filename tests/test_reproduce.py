@@ -32,3 +32,14 @@ def test_final_needs_val_predictions_to_choose_tau(tmp_path):
     cfg, data, res = _data(tmp_path)
     with pytest.raises(SystemExit):
         reproduce(cfg, "final", ["m0"], data_dir=data, out_dir=res, confirm_frozen=True, n_boot=50)
+
+
+def test_rerun_skips_finished_models_and_force_repeats_them(tmp_path):
+    cfg, data, res = _data(tmp_path)
+    reproduce(cfg, "val", ["m1"], data_dir=data, out_dir=res, n_boot=50)
+    info = res / "m1_val_run.json"
+    first = info.stat().st_mtime_ns
+    reproduce(cfg, "val", ["m1"], data_dir=data, out_dir=res, n_boot=50)
+    assert info.stat().st_mtime_ns == first  # no se volvió a entrenar
+    reproduce(cfg, "val", ["m1"], data_dir=data, out_dir=res, n_boot=50, force=True)
+    assert info.stat().st_mtime_ns != first

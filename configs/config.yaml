@@ -65,6 +65,7 @@ models:
     batch_size: 16
     epochs: 5
     patience: 2          # early stopping por F1 macro en val
+    amp: true            # precisión mixta fp16, solo en GPU CUDA (Colab); poner false si diera NaN o errores
   m4:                      # M3 + adaptación de dominio; el fine-tuning final usa los hiperparámetros de m3
     dapt_lr: 5.0e-5
     dapt_epochs: 3
