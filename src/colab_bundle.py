@@ -2,7 +2,8 @@
 resultados previos. Genera artifacts/colab_bundle.zip (se sube a Google Drive).
 
 Incluye: src/, configs/, requirements.txt, data/processed/train.csv y val.csv (+ splits_info.json) y
-los resultados de val de M0 a M2 (predicciones y run.json), para poder compararlos con M3.
+los resultados de val de M0 a M2 (predicciones y run.json), para poder compararlos con M3, y el corpus MLM
+sin etiquetas de M4 (data/external/corpus_mlm.txt, texto público de SAIJ sin val/test; ver src/data/dapt_corpus.py).
 NO incluye: test.csv (cerrado), data/raw, data/interim (datos del bufete), pesos ni caches.
 Si data/processed tuviera datos del bufete el empaquetado se niega: en Colab solo van datos públicos.
 
@@ -27,6 +28,8 @@ def _files(cfg):
     out.append((ROOT / "requirements.txt", Path("requirements.txt")))
     processed = path_of(cfg, "processed")
     out += [(processed / n, Path("data/processed") / n) for n in ("train.csv", "val.csv", "splits_info.json")]
+    external = path_of(cfg, "external")
+    out += [(external / n, Path("data/external") / n) for n in ("corpus_mlm.txt", "corpus_mlm_info.json")]
     results = path_of(cfg, "results")
     out += [(p, Path("experiments/results") / p.name)
             for p in sorted(results.glob("m[012]*_val_preds.csv")) + sorted(results.glob("m[012]*_val_run.json"))]

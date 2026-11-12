@@ -22,6 +22,8 @@ from pathlib import Path
 import numpy as np
 
 from src.config import load_config, load_value_params, param_values, path_of
+from src.evaluation.calibration import (calibrated_frame, expected_calibration_error, fit_temperature,
+                                        probs_and_labels)
 from src.evaluation.compare import compare_models, cost_row
 from src.evaluation.metrics import bootstrap_ci, compute_metrics
 from src.evaluation.preds import read_preds
@@ -73,9 +75,9 @@ def _train(cfg, model, split, seed, final, data_dir, out_dir, n_train, force=Fal
     kw = {"data_dir": data_dir, "out_dir": out_dir}
     if model != "m0":
         kw["seed"] = seed
-    if model in ("m2", "m3"):
+    if model in ("m2", "m3", "m4"):
         kw["save"] = seed == cfg["seed"]  # cabeza o pesos del modelo principal, para explicabilidad y API
-    if model == "m3":  # un checkpoint por época en artifacts/ckpt (en Colab, en Drive)
+    if model in ("m3", "m4"):  # un checkpoint por época en artifacts/ckpt (en Colab, en Drive)
         kw.update(ckpt_dir=path_of(cfg, "artifacts") / "ckpt" / f"{mid}_{split}", resume=not force)
     return run(cfg, split, final=final, **kw)
 
@@ -115,7 +117,7 @@ def reproduce(cfg, stage="val", models=None, seeds=None, data_dir=None, out_dir=
                 primary[m] = (p, _id(m, seed, cfg))
         spread[m] = f1s
 
-    rows, recalls, values, costs = [], {}, {}, {}
+    rows, recalls, values, costs, calib = [], {}, {}, {}, {}
     for m, (p, mid) in primary.items():
         met = compute_metrics(p["y_true"], p["y_pred"], labels)
         ci = bootstrap_ci(p["y_true"], p["y_pred"], labels, n_boot=n_boot, seed=cfg["seed"])
@@ -131,6 +133,16 @@ def reproduce(cfg, stage="val", models=None, seeds=None, data_dir=None, out_dir=
         else:
             tau, _ = optimal_tau(value_curve(p, params))
         values[m] = (tau, value(p, tau, params))
+        # calibración por temperatura: T se ajusta SIEMPRE con las predicciones de val y se aplica a este split
+        val_p = read_preds(out / f"{mid}_val_preds.csv") if final else p
+        temp = fit_temperature(*probs_and_labels(val_p, labels))
+        cal_p = calibrated_frame(p, labels, temp)
+        cal_p.to_csv(out / f"{mid}_cal_{split}_preds.csv", index=False, encoding="utf-8")
+        cal_val = calibrated_frame(val_p, labels, temp)
+        tau_c, _ = optimal_tau(value_curve(cal_val, params))
+        ece_raw = expected_calibration_error(*probs_and_labels(p, labels))
+        ece_cal = expected_calibration_error(*probs_and_labels(cal_p, labels))
+        calib[m] = (temp, ece_raw, ece_cal, tau_c, value(cal_p, tau_c, params))
         run_json = out / f"{mid}_{split}_run.json"
         costs[m] = cost_row(run_json) if run_json.exists() else {}
 
@@ -143,6 +155,10 @@ def reproduce(cfg, stage="val", models=None, seeds=None, data_dir=None, out_dir=
     lines += ["", f"Valor mensual con los parámetros de value_params.yaml (τ elegido con {'val' if final else 'esta misma partición'}).",
               "", "| Modelo | τ | Valor mensual |", "|---|---|---|"]
     lines += [f"| {m} | {values[m][0]:.2f} | {values[m][1]:,.1f} |" for m in values]
+    lines += ["", "Calibración por temperatura (T se ajusta con val; no cambia la clase predicha ni el F1). "
+              "ECE = error de calibración (menor es mejor); el valor usa las probabilidades calibradas y su propio τ.",
+              "", "| Modelo | T | ECE sin calibrar | ECE calibrado | τ calibrado | Valor mensual calibrado |", "|---|---|---|---|---|---|"]
+    lines += [f"| {m} | {c[0]:.2f} | {c[1]:.3f} | {c[2]:.3f} | {c[3]:.2f} | {c[4]:,.1f} |" for m, c in calib.items()]
     lines += ["", "Deltas de F1 macro (siguiente − anterior), IC pareado 95 %", "",
               "| Comparación | Delta | IC | ¿Cruza 0? |", "|---|---|---|---|"]
     for a, b in PAIRS:
@@ -150,10 +166,12 @@ def reproduce(cfg, stage="val", models=None, seeds=None, data_dir=None, out_dir=
             r = compare_models(primary[a][0], primary[b][0], labels, a, b, n_boot=n_boot, seed=cfg["seed"])["delta_macro_f1"]
             lines.append(f"| {a} → {b} | {r['delta']:+.3f} | [{r['ci_low']:+.3f}, {r['ci_high']:+.3f}] | "
                          f"{'no' if r['significant'] else 'sí'} |")
-    keys = ["trainable_params", "train_seconds", "head_train_seconds", "embed_seconds", "inference_ms_per_text", "peak_memory_mb"]
+    keys = ["trainable_params", "train_seconds", "total_train_seconds", "head_train_seconds", "embed_seconds",
+            "inference_ms_per_text", "peak_memory_mb"]
     lines += ["", "Costos", "", "| Modelo | " + " | ".join(keys) + " |", "|---|" + "---|" * len(keys)]
     lines += [f"| {m} | " + " | ".join(str(costs[m].get(k, "")) for k in keys) + " |" for m in costs]
-    lines += ["", "Nota: el valor usa un solo C_op para todos los modelos; ajustarlo por versión en value_params.yaml si se quiere comparar costo de cómputo."]
+    lines += ["", "total_train_seconds (solo M4) = adaptación MLM + fine-tuning.",
+             "", "Nota: el valor usa un solo C_op para todos los modelos; ajustarlo por versión en value_params.yaml si se quiere comparar costo de cómputo."]
     path = out / f"summary_{stage}.md"
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
     return path

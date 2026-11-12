@@ -113,6 +113,61 @@ def test_dapt_runs_offline_on_tiny_bert_and_saves_a_loadable_encoder(tmp_path):
     assert AutoModel.from_pretrained(tmp_path / "out").config.hidden_size == 16
 
 
+def _tiny_bert(tmp_path):
+    from transformers import BertConfig, BertForMaskedLM, BertTokenizerFast
+    words = "el trabajador despido salario contrato demanda juez prueba ley caso de la y".split()
+    vocab = ["[PAD]", "[UNK]", "[CLS]", "[SEP]", "[MASK]"] + words
+    (tmp_path / "vocab.txt").write_text("\n".join(vocab), encoding="utf-8")
+    tok = BertTokenizerFast(str(tmp_path / "vocab.txt"), do_lower_case=True)
+    base = tmp_path / "base"
+    BertForMaskedLM(BertConfig(vocab_size=len(vocab), hidden_size=16, num_hidden_layers=2, num_attention_heads=2,
+                               intermediate_size=32, max_position_embeddings=32)).save_pretrained(base)
+    tok.save_pretrained(base)
+    return base
+
+
+def test_dapt_resumes_from_epoch_checkpoint_and_writes_output_only_when_complete(tmp_path):
+    from src.models.m4_bert_dapt import dapt
+
+    base = _tiny_bert(tmp_path)
+    cfg = load_config()
+    texts = ["el trabajador y el contrato de la ley"] * 6 + ["despido de la demanda y el juez"] * 6
+    ov = {"checkpoint": str(base), "dapt_epochs": 3, "dapt_batch_size": 4, "dapt_max_len": 16}
+    out, ck = tmp_path / "out", tmp_path / "ck"
+
+    def crash_after_first(epoch):
+        if epoch == 1:
+            raise RuntimeError("se apagó Colab")
+
+    with pytest.raises(RuntimeError):
+        dapt(cfg, texts, out, overrides=ov, ckpt_dir=ck, after_epoch=crash_after_first)
+    assert (ck / "state.pt").exists() and not out.exists()   # el encoder final no queda a medias
+    info = dapt(cfg, texts, out, overrides=ov, ckpt_dir=ck)
+    assert info["resumed_from_epoch"] == 1 and [h["epoch"] for h in info["history"]] == [1, 2, 3]
+    assert (out / "config.json").exists() and not (tmp_path / "out.tmp").exists()
+    with pytest.raises(ValueError):                           # un checkpoint de otra configuración no se reutiliza
+        dapt(cfg, texts, tmp_path / "out2", overrides={**ov, "dapt_lr": 1e-3}, ckpt_dir=ck)
+
+
+def test_build_corpus_drops_short_duplicate_and_leaky_texts(tmp_path):
+    import gzip
+    from src.data.dapt_corpus import build_corpus
+
+    def txt(i):
+        return " ".join(f"palabra{(i * 7 + j) % 40}x{i}" for j in range(30))
+
+    held = [txt(100), txt(100), txt(101), txt(101)]               # val/test (repetidos para que TF-IDF los vea)
+    near = txt(100).rsplit(" ", 1)[0] + " otra"                   # casi igual a un texto de val/test
+    rows = [("a", "CIVIL", txt(1)), ("b", "CIVIL", txt(2)), ("c", "PENAL", txt(3)), ("d", "PENAL", txt(3)),   # duplicado
+            ("e", "PENAL", "muy corto"), ("f", "CIVIL", txt(101)), ("g", "CIVIL", near)]
+    src = tmp_path / "s.csv.gz"
+    with gzip.open(src, "wt", encoding="utf-8") as f:
+        pd.DataFrame(rows, columns=["id", "materia", "texto"]).to_csv(f, index=False)
+    out, info = build_corpus(src, exclude_texts=held, near_dup_texts=held, n=10, seed=1)
+    assert set(out["id"]) == {"a", "b", "c"}
+    assert info["descartados_casi_duplicados_de_val_test"] == 1
+
+
 def test_merge_curves_replaces_only_models_in_other_file(tmp_path):
     from src.evaluation.learning_curve import merge_curves
     row = {"fraction": 1.0, "n_train": 10, "seed": 1, "val_accuracy": 0.5}

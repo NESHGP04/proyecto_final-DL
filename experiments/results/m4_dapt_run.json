@@ -1,0 +1,27 @@
+{
+ "texts": 62600,
+ "epochs": 3,
+ "seconds": 3337.49,
+ "device": "cuda",
+ "peak_memory_mb": 4568,
+ "mlm_head_pretrained": true,
+ "amp": true,
+ "resumed_from_epoch": 0,
+ "history": [
+  {
+   "epoch": 1,
+   "mlm_loss": 1.4178645799234948,
+   "epoch_seconds": 1086.15
+  },
+  {
+   "epoch": 2,
+   "mlm_loss": 1.1733541128856582,
+   "epoch_seconds": 1090.69
+  },
+  {
+   "epoch": 3,
+   "mlm_loss": 1.0794993661384036,
+   "epoch_seconds": 1088.22
+  }
+ ]
+}

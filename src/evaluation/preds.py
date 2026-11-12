@@ -6,8 +6,8 @@ import numpy as np
 import pandas as pd
 
 
-def write_preds(path, case_ids, y_true, probs, labels):
-    """probs: array (n, len(labels)) con las probabilidades por clase, en el orden de `labels`."""
+def preds_frame(case_ids, y_true, probs, labels):
+    """DataFrame en el formato 7.2. probs: array (n, len(labels)) en el orden de `labels`."""
     probs = np.asarray(probs, dtype=float)
     pred_idx = probs.argmax(axis=1)
     df = pd.DataFrame({
@@ -18,6 +18,11 @@ def write_preds(path, case_ids, y_true, probs, labels):
     })
     for j, label in enumerate(labels):
         df[f"prob_{label}"] = probs[:, j]
+    return df
+
+
+def write_preds(path, case_ids, y_true, probs, labels):
+    df = preds_frame(case_ids, y_true, probs, labels)
     df.to_csv(path, index=False, encoding="utf-8")
     return df
 

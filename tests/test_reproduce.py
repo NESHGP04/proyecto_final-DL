@@ -1,3 +1,4 @@
+import pandas as pd
 import pytest
 
 from src.config import load_config
@@ -18,11 +19,14 @@ def test_val_then_final_with_guards(tmp_path):
     cfg, data, res = _data(tmp_path)
     md = reproduce(cfg, "val", ["m0", "m1"], data_dir=data, out_dir=res, n_boot=100).read_text(encoding="utf-8")
     assert "| m0 |" in md and "| m1 |" in md and "m0 → m1" in md and "Valor mensual" in md
+    assert "Calibración por temperatura" in md and (res / "m1_cal_val_preds.csv").exists()
 
     with pytest.raises(SystemExit):  # el test no se toca sin confirmar
         reproduce(cfg, "final", ["m0"], data_dir=data, out_dir=res)
     final = reproduce(cfg, "final", ["m0", "m1"], data_dir=data, out_dir=res, confirm_frozen=True, n_boot=100)
     assert "final (test)" in final.read_text(encoding="utf-8")
+    cal_test, raw_test = pd.read_csv(res / "m1_cal_test_preds.csv"), pd.read_csv(res / "m1_test_preds.csv")
+    assert (cal_test["y_pred"] == raw_test["y_pred"]).all()  # calibrar no cambia la clase predicha
     with pytest.raises(SystemExit):  # y se usa una sola vez
         reproduce(cfg, "final", ["m0"], data_dir=data, out_dir=res, confirm_frozen=True)
     reproduce(cfg, "final", ["m0"], data_dir=data, out_dir=res, confirm_frozen=True, again=True, n_boot=100)

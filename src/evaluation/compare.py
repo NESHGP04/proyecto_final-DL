@@ -36,7 +36,8 @@ def cost_row(run_json_path):
     """Costos de un modelo a partir de su <id>_<split>_run.json."""
     info = json.loads(Path(run_json_path).read_text(encoding="utf-8"))
     keys = ("trainable_params", "total_params", "train_seconds", "head_train_seconds", "embed_seconds",
-            "inference_ms_per_text", "peak_memory_mb", "embeddings_from_cache", "device", "best_epoch")
+            "inference_ms_per_text", "peak_memory_mb", "embeddings_from_cache", "device", "best_epoch",
+            "total_train_seconds")
     return {k: info[k] for k in keys if k in info}
 
 

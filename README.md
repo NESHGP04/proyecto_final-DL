@@ -88,6 +88,8 @@ python -m src.models.m3_bert_finetune --split val --save    # guarda pesos en ar
 python -m src.models.m2_bert_frozen --split val --save      # guarda la cabeza (para explicabilidad)
 python -m src.evaluation.learning_curve --model m1 --seeds 42 43 44
 python -m src.explain.explain --split val --n 3 --models m2 m3
+python -m src.data.dapt_corpus --n 50000                    # corpus MLM sin val/test (para M4)
+python -m src.evaluation.calibration --model m3             # temperatura T ajustada con val; la API la aplica
 ```
 
 ## Aplicación

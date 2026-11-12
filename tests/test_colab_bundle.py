@@ -12,6 +12,10 @@ def _cfg(tmp_path):
     cfg["paths"]["processed"] = str(tmp_path / "processed")
     cfg["paths"]["results"] = str(tmp_path / "results")
     cfg["paths"]["artifacts"] = str(tmp_path / "artifacts")
+    cfg["paths"]["external"] = str(tmp_path / "external")
+    (tmp_path / "external").mkdir()
+    (tmp_path / "external" / "corpus_mlm.txt").write_text("[[p]]texto legal público[[/p]]", encoding="utf-8")
+    (tmp_path / "external" / "saij_filtrado.csv.gz").write_text("x", encoding="utf-8")
     (tmp_path / "processed").mkdir()
     (tmp_path / "results").mkdir()
     return cfg
@@ -35,6 +39,8 @@ def test_bundle_has_code_train_val_and_old_results_but_never_test(tmp_path):
     assert f"{TOP}/experiments/results/m1_val_preds.csv" in names and f"{TOP}/experiments/results/m1_val_run.json" in names
     assert not any("test.csv" in n or "test_preds" in n or "/raw/" in n or "/interim/" in n for n in names)
     assert f"{TOP}/experiments/results/m3_val_preds.csv" not in names  # solo M0 a M2: M3 se calcula en Colab
+    assert f"{TOP}/data/external/corpus_mlm.txt" in names           # corpus MLM de M4
+    assert not any("saij_filtrado" in n for n in names)              # la fuente completa (111 MB) no se sube
     assert not any("__pycache__" in n or n.endswith(".pyc") for n in names)
 
 
