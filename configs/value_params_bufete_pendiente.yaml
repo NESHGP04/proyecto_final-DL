@@ -1,8 +1,5 @@
-# Propuesta documental actualizada tras confirmaciones de los abogados.
-# Alcance: organización de la cartera por abogado; una etiqueta principal.
-# No sustituye value_params.yaml ni es ejecutable con el cargador numérico actual.
-# null indica dato pendiente; 10 minutos es máximo declarado, no promedio medido.
-# Fuente: confirmaciones del bufete compartidas por Cami en esta conversación.
+# Propuesta documental; contiene null y no reemplaza la configuración activa.
+# Tiempos de la comparación asistida medidos con demo simulada, no M3/M4.
 
 N:
   value: 10
@@ -14,14 +11,16 @@ N:
   nota: Estimación mensual para nuevos casos judiciales, no número de documentos ni
     volumen total de trámites. Falta rango y correspondencia con unidades clasificadas.
 t_m:
-  value: null
-  min: null
+  value: 9.5
+  min: 9
   max: 10
-  fuente: estimacion_bufete
-  unidad: minutos_clasificacion_manual/unidad
-  nota: Hasta aproximadamente 10 minutos, usando encabezado y autoridad o institución
-    de origen. Es máximo estimado, no promedio ni ahorro neto. Confirmar unidad caso/documento
-    y medir revisión de la sugerencia.
+  fuente: prueba_exploratoria_reportada_por_Cami_n2
+  unidad: minutos/tarea_manual
+  nota: Media de 9 y 10 minutos manuales. Min/max describen dos observaciones, no
+    límites poblacionales ni rango de sensibilidad validado. Media asistida 4,325
+    minutos; diferencia 5,175 minutos. Modo demo simulada confirmado; equivalencia
+    de tareas y unidad caso/documento pendientes. Los tiempos asistidos no miden M3/M4.
+    No asumir ahorro de todo t_m.
 c_h:
   value: null
   min: null

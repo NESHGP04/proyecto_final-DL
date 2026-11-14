@@ -1,0 +1,15 @@
+{
+  "fuente": "Tiempos y observaciones reportados por Cami en la conversación",
+  "fecha_pruebas": null,
+  "modo": "demo_simulada",
+  "n_usabilidad": 2,
+  "n_tiempos": 2,
+  "correspondencia_entre_participantes_cp3_cp5": "no_confirmada",
+  "manual_media_segundos": 570.0,
+  "asistido_media_segundos": 259.5,
+  "diferencia_media_segundos": 310.5,
+  "reduccion_sobre_tiempo_total_porcentaje": 54.473684210526315,
+  "promedio_porcentajes_individuales": 55.0,
+  "tiempo_medio_sesion_usabilidad_segundos": 240,
+  "resultado": "exploratorio con demo simulada; no desempeño ni ahorro validado de M3/M4"
+}

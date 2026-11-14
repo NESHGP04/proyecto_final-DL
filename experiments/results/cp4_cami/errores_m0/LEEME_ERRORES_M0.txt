@@ -1,0 +1,63 @@
+CP4 — REVISIÓN AGREGADA DE ERRORES DE M0 EN VALIDACIÓN
+
+ALCANCE
+Se usan m0_val_preds.csv, m3_val_preds.csv y m4_val_preds.csv existentes,
+correspondientes a las salidas principales de semilla 42. Se comprobaron IDs
+y etiquetas coincidentes. No se entrenó ningún modelo ni se abrió test.
+No se cargaron textos ni se intentó explicar errores individuales sin ellos.
+M0 ya usa calibración interna de SVM; aquí se usan sus probabilidades originales,
+sin aplicar la calibración adicional por temperatura del archivo m0_cal_val_preds.
+
+RESULTADOS PRINCIPALES
+M0 acierta 2098 de 2688 casos, con 590 errores, exactitud 0,780506 y F1 macro
+0,780597. Civil tiene 170 errores entre 449 casos (recall 0,621); otros, 123
+entre 450 (0,727); laboral, 120 entre 450 (0,733). Las principales confusiones
+son civil -> otros (53), laboral -> civil (48), mercantil -> civil (47),
+civil -> mercantil (45) y otros -> civil (43).
+No es posible establecer la causa textual de esas confusiones solo con etiquetas.
+
+Familia alcanza recall 0,957, pero su etiqueta es parcialmente débil por reglas
+léxicas según el código de preparación y las tareas. No interpretar ese resultado
+como prueba de reconocimiento independiente ni de generalización al bufete.
+
+CONFIANZA Y REVISIÓN HUMANA
+Con umbral ilustrativo 0,70, se aceptan 1481 casos y 121 son incorrectos.
+Con 0,80, se aceptan 1024 casos y 51 son incorrectos.
+Con 0,90, se aceptan 326 casos y 6 son incorrectos: precisión observada 98,16 %,
+con cobertura 12,13 %. Subir el umbral reduce aquí el número de casos aceptados.
+Con 0,95, se aceptan 61 casos sin errores observados. Una muestra pequeña sin
+errores no demuestra riesgo nulo ni desempeño futuro, y no justifica por sí
+sola adoptar ese umbral en producción.
+Los umbrales son descriptivos, no un ajuste económico con los nuevos datos del
+bufete ni una política operativa seleccionada. La confianza sobre SAIJ puede
+comportarse de otra forma en documentos reales guatemaltecos.
+
+COMPARACIÓN PAREADA DESCRIPTIVA
+M3 corrige 199 errores de M0 y convierte 159 aciertos de M0 en errores: mejora
+neta de 40 aciertos, para 2138 correctos. M4 corrige 231 y pierde 162: mejora
+neta de 69 aciertos, para 2167 correctos. Ambos tienen errores nuevos además
+de correcciones; no afirmar que mejoran todos los casos individualmente.
+Estos conteos son descriptivos sobre la misma validación, no un contraste
+estadístico nuevo ni una media entre semillas. Tampoco demuestran ahorro.
+
+ARCHIVOS PARA EL REPO
+- matriz_confusion.csv: filas de área real y columnas de área predicha.
+- metricas_por_area.csv: soporte, precisión, recall, F1 y errores por área.
+- confusiones_ordenadas.csv: conteos por par de clases y fracción de los 590 errores.
+- cobertura_precision.csv: revisión/aceptación para umbrales ilustrativos.
+- cambios_frente_m0.csv: correcciones y errores nuevos de M3/M4 frente a M0.
+- resumen_verificado.json: alcance y métricas globales.
+- Este LEEME_ERRORES_M0.txt.
+Todos son resúmenes agregados, sin textos ni IDs de casos.
+
+VERIFICACIÓN
+Se comprobaron IDs únicos, etiquetas coincidentes, campos requeridos no nulos,
+confianza finita en [0,1], total de matriz igual a 2688, suma de errores por
+área y por confusión igual a 590, y conciliación de correcciones menos errores
+nuevos con la diferencia total de aciertos. No se ejecutó suite completa.
+
+PENDIENTES PARA CERRAR CP4
+La revisión agregada de errores de M0 ya está hecha. Faltan interpretación
+textual con datos permitidos y búsqueda pequeña de C/ngramas en train/val
+cuando estén disponibles; justificar el modelo de valor con alcance actualizado;
+completar costos por versión y decidir/congelar calibración y umbral con el equipo.

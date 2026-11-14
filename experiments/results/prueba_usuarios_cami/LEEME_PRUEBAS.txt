@@ -1,0 +1,37 @@
+PRUEBAS DE USO Y TIEMPOS — DATOS REPORTADOS POR CAMI
+
+Usabilidad CP5: dos personas comprendieron el flujo, con sesiones de 5 y 3
+minutos. No pudieron cargar PDF porque el prototipo solo admite TXT; realizaron
+la prueba pegando texto. Se observó una duplicación tras dos clics en Clasificar,
+atribuida por la observadora a falta de confirmación visible. No se indicó cuál
+participante presentó ese incidente; no se atribuye individualmente en los CSV.
+No se confirmó en este reporte el guardado de correcciones o su exactitud.
+
+CP3: A1 manual 9:00, asistido 3:09; A2 manual 10:00, asistido 5:30, este último
+reportado como primer uso. Se interpreta 3:09 como tres minutos y nueve segundos.
+La media manual es 9:30 y la asistida 4:19,5. Diferencia media: 5:10,5.
+Las reducciones individuales son 65 % y 45 %. El promedio simple de esos
+porcentajes es 55 %; la reducción de tiempo total agregado es 54,47 %.
+No son el mismo cálculo. El resumen usa la reducción agregada, sin IC.
+
+Se mantienen separadas las sesiones de usabilidad y la comparación de tiempos:
+no se confirmó que correspondan a las mismas personas, tareas o sesiones.
+El modo demo simulada fue confirmado por Cami. Fecha de las pruebas, textos utilizados, equivalencia de tareas,
+orden de condiciones y criterio exacto de inicio/fin no quedaron documentados.
+No se afirma que fueran tareas contrabalanceadas ni que se cronometrara desde
+la carga hasta el guardado. No se conserva texto de documentos ni nombres.
+
+Los resultados son exploratorios y autorreportados a través de Cami. Dos
+participantes no permiten establecer un promedio general del bufete, atribuir
+causalidad o validar ahorro monetario. Al haberse usado demo, describen interacción
+con una simulación, no el desempeño o el beneficio de M3/M4.
+La dificultad con PDF refleja una limitación real del prototipo; no se implementó
+PDF en esta actualización. No convertir datos sintéticos de clasificación en
+métricas de precisión: aquí se reportan tiempos humanos, no aciertos del modelo.
+
+Se añadió al dashboard confirmación de registro y protección de reenvío
+consecutivo idéntico por sesión. Pendiente de repetir prueba con personas;
+la mejora de interfaz no se considera validada automáticamente por estas pruebas.
+
+Para el repo: estos CSV agregados, resumen JSON y LEEME si el equipo desea
+conservar evidencia anonimizada. No contienen datos de clientes ni informantes.

@@ -1,0 +1,12 @@
+{
+  "split": "val",
+  "semilla": 42,
+  "probabilidades": "sin calibracion adicional por temperatura",
+  "casos": 2688,
+  "correctos": 2098,
+  "errores": 590,
+  "exactitud": 0.7805059523809523,
+  "f1_macro": 0.780597415409995,
+  "ids_y_etiquetas_coincidentes": true,
+  "umbrales": "ilustrativos, no seleccionados como politica operativa ni optimo economico"
+}
