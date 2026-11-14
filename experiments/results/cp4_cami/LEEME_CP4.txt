@@ -1,0 +1,47 @@
+CP4 DE CAMI — AVANCE PROVISIONAL, 13 NOVIEMBRE 2026
+
+CONTENIDO
+- src/value/analyze_validation.py: nuevo módulo reproducible.
+- resumen.csv: umbral, cobertura, precisión automática, valor y deltas.
+- curvas_valor.csv/.png: malla de 101 umbrales por modelo.
+- sensibilidad.csv/.png: factores 0,5; 0,8; 1; 1,2; 1,5 por parámetro, con tau fijo.
+- escenarios_costo_operacion.csv: C_op de 0 y 200, extremos existentes en YAML.
+- parametros_y_verificacion.json: parámetros, estado de comprobaciones y alcance.
+- borrador_4_3.txt y tareas_cami.txt: texto para revisar y lista completa.
+
+REPRODUCIR
+Desde la raíz de tu repo, con sus dependencias instaladas:
+python -m src.value.analyze_validation
+La carpeta experiments/results/cp4_cami debe ser nueva. Si ya existe:
+python -m src.value.analyze_validation --out experiments/results/cp4_cami_revision2
+Extrae el ZIP sobre una copia del repo: contiene únicamente el módulo nuevo y sus salidas.
+
+VALIDACIÓN REALIZADA
+Se verificaron los mismos 2688 IDs únicos y etiquetas en M0 a M4; ausencia de
+nulos en campos necesarios; confianza finita en [0,1]; probabilidades finitas
+en [0,1] con suma uno; correspondencia de argmax con clase y confianza.
+Se comprobó la descomposición contable del valor para cada modelo.
+Pasaron las cinco funciones de prueba existentes de tests/test_value_model.py,
+ejecutadas directamente. pytest no está instalado en este entorno; no se
+ha ejecutado la suite completa. Se inspeccionaron las figuras generadas.
+
+LÍMITES Y PENDIENTES PARA CERRAR CP4
+No se reentrenó ni ajustó M0: faltan train/val con texto. Tampoco se hizo
+análisis textual de errores ni búsqueda de hiperparámetros.
+Todos los parámetros económicos son supuestos del YAML, no mediciones del bufete.
+No se asignó una moneda: los resultados están en unidades monetarias consistentes.
+C_op es cero común; los escenarios 0/200 son exploraciones, no costos medidos.
+La sensibilidad es individual, no una simulación de cambios simultáneos ni IC.
+No se recortaron factores de sensibilidad a los rangos del YAML: los factores
+son el análisis solicitado de ±20 % y ±50 %, separado de esos rangos.
+Las latencias existentes corresponden a hardware distinto; falta medición
+comparable y costo de máquina documentado por versión.
+Se usaron predicciones sin calibrar de la semilla 42; no se agregaron semillas.
+Los óptimos se eligieron y valoraron en la misma validación: son exploratorios,
+pueden ser optimistas y no demuestran ahorro real ni desempeño en test.
+Falta decidir y congelar la variante calibrada o sin calibrar y su umbral antes
+de la evaluación final. No se cambió confidence_threshold del config compartido.
+El aumento de valor de M4 sobre M3 aquí no demuestra superioridad estadística.
+CP1, CP2 y CP3 no se dan por aprobados. Falta PLAN_DATOS_RAW.md sección 8.
+No se abrió test, no se cambiaron archivos de Nes ni se ejecutaron comandos Git.
+No se enviaron mensajes ni correos.

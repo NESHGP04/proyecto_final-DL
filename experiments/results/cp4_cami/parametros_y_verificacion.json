@@ -1,0 +1,76 @@
+{
+  "params": {
+    "N": {
+      "value": 300,
+      "min": 150,
+      "max": 600,
+      "fuente": "supuesto",
+      "unidad": "casos/mes"
+    },
+    "t_m": {
+      "value": 6.0,
+      "min": 3.0,
+      "max": 12.0,
+      "fuente": "supuesto",
+      "unidad": "minutos/caso"
+    },
+    "c_h": {
+      "value": 50.0,
+      "min": 30.0,
+      "max": 100.0,
+      "fuente": "supuesto",
+      "unidad": "moneda/hora"
+    },
+    "e_0": {
+      "value": 0.1,
+      "min": 0.05,
+      "max": 0.2,
+      "fuente": "supuesto",
+      "unidad": "fracción"
+    },
+    "c_err": {
+      "value": 40.0,
+      "min": 20.0,
+      "max": 120.0,
+      "fuente": "supuesto",
+      "unidad": "moneda/caso"
+    },
+    "C_op": {
+      "value": 0.0,
+      "min": 0.0,
+      "max": 200.0,
+      "fuente": "supuesto",
+      "unidad": "moneda/mes"
+    }
+  },
+  "checks": [
+    {
+      "model": "m0",
+      "n": 2688,
+      "checks": "ok"
+    },
+    {
+      "model": "m1",
+      "n": 2688,
+      "checks": "ok"
+    },
+    {
+      "model": "m2",
+      "n": 2688,
+      "checks": "ok"
+    },
+    {
+      "model": "m3",
+      "n": 2688,
+      "checks": "ok"
+    },
+    {
+      "model": "m4",
+      "n": 2688,
+      "checks": "ok"
+    }
+  ],
+  "split": "val",
+  "calibrated": false,
+  "selection": "Malla 0.00 a 1.00, paso 0.01; primer máximo; semilla 42"
+}
