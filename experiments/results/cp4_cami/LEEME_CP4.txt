@@ -45,3 +45,12 @@ El aumento de valor de M4 sobre M3 aquí no demuestra superioridad estadística.
 CP1, CP2 y CP3 no se dan por aprobados. Falta PLAN_DATOS_RAW.md sección 8.
 No se abrió test, no se cambiaron archivos de Nes ni se ejecutaron comandos Git.
 No se enviaron mensajes ni correos.
+
+ACTUALIZACIÓN DE ALCANCE TRAS CONSULTA AL BUFETE
+La aplicación confirmada es organización interna por abogado con una etiqueta
+principal, no reparto central de casos. Los abogados declaran hasta 10 minutos
+para clasificar; no es promedio medido ni tiempo ahorrado. El volumen reportado
+es de unos 10 casos judiciales nuevos/mes, no todas las entradas ni documentos.
+Las cifras de este paquete CP4 provienen del escenario original (N=300 y demás
+marcadores); se conservan como ilustración, no como estimación económica del
+bufete. Los parámetros actualizados incompletos están documentados por separado.
