@@ -101,5 +101,14 @@
    "train_macro_f1": 0.997381588144223,
    "val_macro_f1": 0.740808708934587
   }
- ]
+ ],
+ "medicion_repetida": {
+  "train_seconds": 711.16,
+  "inference_ms_per_text": 0.756
+ },
+ "device": "cpu",
+ "peak_memory_mb": 546,
+ "machine": "x86_64",
+ "system": "Darwin",
+ "predicciones_identicas_al_repetir": true
 }

@@ -1,6 +1,7 @@
 """Análisis provisional de CP4; lee solo predicciones de validación.
 
-Uso: python -m src.value.analyze_validation
+Uso: python -m src.value.analyze_validation [--calibrated]
+--calibrated lee <modelo>_cal_val_preds.csv (probabilidades con temperatura) y escribe en cp4_cami_calibrado.
 No entrena modelos, no abre test y no cambia parámetros ni resultados previos.
 """
 import argparse
@@ -17,7 +18,7 @@ from src.config import load_config, load_value_params, param_values, path_of
 from src.value.value_model import optimal_tau, sensitivity, value, value_curve
 
 
-def analyze(results, out, params_metadata):
+def analyze(results, out, params_metadata, calibrated=False):
     results, out = Path(results), Path(out)
     # Una carpeta nueva evita sobreescribir una corrida anterior.
     out.mkdir(parents=True, exist_ok=False)
@@ -26,7 +27,7 @@ def analyze(results, out, params_metadata):
     reference = None
     fig, ax = plt.subplots(figsize=(9, 5.5))
     for model in ("m0", "m1", "m2", "m3", "m4"):
-        preds = pd.read_csv(results / f"{model}_val_preds.csv")
+        preds = pd.read_csv(results / f"{model}_{'cal_' if calibrated else ''}val_preds.csv")
         required = {"case_id", "y_true", "y_pred", "conf"}
         if not required <= set(preds) or preds.empty:
             raise ValueError(f"{model}: formato incompleto o vacío")
@@ -83,7 +84,7 @@ def analyze(results, out, params_metadata):
     sens.to_csv(out / "sensibilidad.csv", index=False)
     pd.DataFrame(differences).to_csv(out / "escenarios_costo_operacion.csv", index=False)
     (out / "parametros_y_verificacion.json").write_text(json.dumps(
-        dict(params=params_metadata, checks=checks, split="val", calibrated=False,
+        dict(params=params_metadata, checks=checks, split="val", calibrated=calibrated,
              selection="Malla 0.00 a 1.00, paso 0.01; primer máximo; semilla 42"),
         ensure_ascii=False, indent=2), encoding="utf-8")
     ax.axhline(0, color="#555555", linewidth=.8)
@@ -116,6 +117,10 @@ if __name__ == "__main__":
     cfg = load_config()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--results", type=Path, default=path_of(cfg, "results"))
-    parser.add_argument("--out", type=Path, default=path_of(cfg, "results") / "cp4_cami")
+    parser.add_argument("--calibrated", action="store_true",
+                        help="usa las probabilidades con temperatura (<modelo>_cal_val_preds.csv)")
+    parser.add_argument("--out", type=Path, default=None,
+                        help="carpeta nueva; por defecto cp4_cami, o cp4_cami_calibrado con --calibrated")
     args = parser.parse_args()
-    analyze(args.results, args.out, load_value_params())
+    out = args.out or path_of(cfg, "results") / ("cp4_cami_calibrado" if args.calibrated else "cp4_cami")
+    analyze(args.results, out, load_value_params(), calibrated=args.calibrated)

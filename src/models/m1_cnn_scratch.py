@@ -24,6 +24,7 @@ from src.config import load_config, path_of
 from src.data.dataset import load_split
 from src.evaluation.curves import plot_history
 from src.evaluation.preds import write_preds
+from src.evaluation.resources import machine_info, peak_rss_mb
 
 MODEL_ID = "m1"
 PAD, UNK = 0, 1
@@ -155,6 +156,7 @@ def run(cfg, eval_split="val", final=False, seed=None, train_df=None, data_dir=N
         "epochs_run": len(history), "best_val_macro_f1": max(h["val_macro_f1"] for h in history),
         "trainable_params": sum(p.numel() for p in model.parameters()),
         "train_seconds": round(train_s, 2), "inference_ms_per_text": round(infer_ms, 3),
+        "device": "cpu", "peak_memory_mb": peak_rss_mb(), **machine_info(),
         "history": history,
     }
     (out_dir / f"{model_id}_{eval_split}_run.json").write_text(json.dumps(info, indent=1), encoding="utf-8")
