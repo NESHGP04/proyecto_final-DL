@@ -1,5 +1,6 @@
-# Propuesta documental; contiene null y no reemplaza la configuración activa.
-# Tiempos de la comparación asistida medidos con demo simulada, no M3/M4.
+# Evidencia del bufete: datos desconocidos permanecen null.
+# Tiempos asistidos de demo; no usar este archivo incompleto como configuración numérica.
+# Escenarios ejecutables documentados por separado en value_scenarios.yaml.
 
 N:
   value: 10
@@ -20,7 +21,8 @@ t_m:
     límites poblacionales ni rango de sensibilidad validado. Media asistida 4,325
     minutos; diferencia 5,175 minutos. Modo demo simulada confirmado; equivalencia
     de tareas y unidad caso/documento pendientes. Los tiempos asistidos no miden M3/M4.
-    No asumir ahorro de todo t_m.
+    No asumir ahorro de todo t_m. La variante workflow descuenta por separado el tiempo
+    asistido; no sustituye t_m por ahorro neto silenciosamente.
 c_h:
   value: null
   min: null
@@ -51,4 +53,5 @@ C_op:
   max: null
   fuente: pendiente_medicion_por_version
   unidad: GTQ/mes
-  nota: Medir cómputo y mantenimiento por modelo; no asignar cero como costo observado.
+  nota: Precios y mantenimiento aún pendientes. Hay coeficientes medidos de inferencia
+    y límites normalizados en cp3_cp4_escenarios; no equivalen a costo mensual completo.

@@ -1,0 +1,74 @@
+TAREAS DE CAMI — ORDEN PRÁCTICO, 13 NOVIEMBRE 2026
+Basado en Tareas de Cami (11 nov) y en el ZIP recibido. Estado documental,
+no confirmación de que trabajos humanos pendientes se hayan realizado.
+
+1. CP4: análisis de valor con resultados existentes — INICIADO
+HECHO: validar predicciones, calcular curvas de valor y tau, cobertura,
+precisión, deltas, sensibilidad ±20/±50 %, escenarios C_op y borrador 4.3.
+FALTA: revisar confusión de M0, documentar errores agregados; búsqueda pequeña
+C={0,5;1;2} y ngramas (1,2)/(1,3) solo cuando estén train/val localmente;
+confirmar parámetros económicos; costos por versión con hardware comparable;
+elegir calibración y tau; revisión del borrador. No declarar CP4 cerrado.
+
+2. CP5: dashboard — PUEDE DESARROLLARSE AHORA, PRÓXIMO CHECKPOINT
+Implementar en app/dashboard.py: pegar/subir texto; área, confianza,
+probabilidades y acción según tau; cola; corrección manual; CSV con hora,
+área del modelo, área corregida y confianza, sin texto del caso.
+Empezar con ejemplos inventados y simulación claramente identificada.
+Integrar con /classify respetando el contrato de la API; no editar archivos de Nes.
+Para inferencia real local hacen falta API operativa y pesos, ausentes del ZIP.
+Probar con 1–2 personas, medir tiempos y documentar comentarios: tarea humana.
+
+3. CP2: EDA y sección 4.2 — PARCIALMENTE POSIBLE
+Crear notebooks/eda.ipynb para train/val, nunca test. Analizar balance,
+composición de familia y otros (etiqueta/materia_original), longitudes,
+duplicados y casi duplicados/splits_info, menciones de tribunal/cámara/sala
+y área, y vocabulario SAIJ frente al piloto. Requiere esos datos localmente.
+Con predicciones se puede describir composición de val y confusiones,
+pero no sustituye el EDA textual ni demuestra ausencia de fugas.
+Redactar fuentes, volúmenes, formato, representatividad, split, privacidad,
+licencias y límites; verificar las licencias antes de cerrar el texto.
+PLAN_DATOS_RAW.md sección 8 sigue sin estar disponible.
+
+4. CP1: piloto real y OCR — REQUIERE TRABAJO LOCAL Y REVISIÓN HUMANA
+Depurar nombres_candidatos.txt y completar variantes, partes, abogados,
+empresa y direcciones; guardar nombres_caso.txt.
+Regenerar con python -m src.data.build_pilot. Leer 100 % de fragmentos.csv,
+repetir hasta retirar residuos; revision_humana=si solo tras revisión real.
+Elegir 3–5 páginas de narración de demanda/ampliación; transcribir a mano;
+comparar con OCR mediante character_error_rate; guardar CER por página.
+Solicitar autorización escrita sobre fragmentos anonimizados para demo y
+presentación; registrar respuesta o pendiente. Tú envías el correo.
+No adjuntar material confidencial a asistentes sin autorización escrita.
+No se necesitan más documentos del bufete: trabajar con los 12 existentes.
+
+5. CP3: parámetros del bufete — TÚ PUEDES GESTIONARLO AHORA
+Consultar volumen mensual/picos; minutos manuales; costo por hora por rol;
+error inicial estimado (sin presentarlo como auditoría); costo de reasignación
+y demora; tiempo actual de primera respuesta.
+Actualizar configs/value_params.yaml con valor, mínimo, máximo y fuente.
+Lo no contestado queda supuesto con justificación. El tiempo de primera
+respuesta es KPI de contexto; no introducirlo como variable de la fórmula
+sin una decisión explícita sobre su diseño.
+
+6. CP6: informe y entrega — BORRADORES POSIBLES AHORA
+4.1: negocio, justificación de DL, KPIs actuales y evidencia disponible.
+4.2: datos y límites del proxy SAIJ; familia débil y otros heterogéneo.
+4.3: modelo de valor, resultados provisionales, sensibilidad y costos pendientes.
+4.6: experiencia de usuario; completar evidencia tras prueba con personas.
+Integrar con Nes; video 2–4 min, material de apoyo, ensayo y dominio de ambas.
+Revisar privacidad de archivos, capturas y diapositivas. Antes de publicar,
+verificar también archivos ya rastreados/ignorados; no basta ver git status.
+Publicación, staging, commits, push y ramas los manejan ustedes manualmente.
+
+7. EVALUACIÓN FINAL — POSPUESTA
+Nes ejecuta la evaluación final cuando configuraciones y tau estén congelados.
+Tú calculas valor sobre las predicciones finales sin reajustar después.
+No abrir test ahora ni ejecutar comandos de etapa final para probar código.
+
+LÍMITES TRANSVERSALES
+M1–M4, API, explicabilidad, curvas de aprendizaje, medición de cómputo y README
+son de Nes: comunicar necesidades sin editar esos archivos.
+No declarar permisos, revisión humana, pruebas de usuarios o aprobación de
+Nes por inferencia. Pausar al terminar cada checkpoint. No resultados
+reportables de datos sintéticos. Ningún texto real en entregables o logs.

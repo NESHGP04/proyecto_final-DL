@@ -57,3 +57,37 @@ def sensitivity(preds, params, tau, factors=(0.5, 0.8, 1.0, 1.2, 1.5), names=Non
             changed[name] = params[name] * f
             rows.append({"param": name, "factor": f, "value": value(preds, tau, changed)})
     return pd.DataFrame(rows)
+
+
+def workflow_components(preds, tau, params):
+    """Extensión explícita para organización con confirmación humana.
+
+    t_m: tiempo manual; t_a: tiempo asistido de los aceptados;
+    t_r: sobrecosto frente al flujo manual en los enviados a revisión.
+    No cambia value(): con t_a=t_r=0 se recupera su fórmula.
+    c_err penaliza sugerencias erróneas según preds, no errores jurídicos.
+    """
+    if preds.empty:
+        raise ValueError("Se necesitan predicciones no vacías")
+    names = ("N", "t_m", "t_a", "t_r", "c_h", "e_0", "c_err", "C_op")
+    pms = {name: float(params[name]) for name in names}
+    if not all(np.isfinite(v) for v in pms.values()):
+        raise ValueError("Los parámetros deben ser finitos")
+    if any(pms[name] < 0 for name in names) or pms["e_0"] > 1:
+        raise ValueError("Parámetros negativos o tasa fuera de [0,1]")
+    if not np.isfinite(tau) or not 0 <= tau <= 1:
+        raise ValueError("Umbral fuera de [0,1]")
+    kappa, precision = coverage_precision(preds, tau)
+    minutes = pms["N"] * (kappa * (pms["t_m"] - pms["t_a"])
+                           - (1-kappa) * pms["t_r"])
+    exposure = pms["N"] * kappa * ((1-precision) - pms["e_0"]) if kappa else 0.0
+    budget = minutes / 60 * pms["c_h"] - exposure * pms["c_err"]
+    return dict(tau=float(tau), kappa=kappa, p=precision,
+                net_minutes=minutes, net_error_exposure=exposure,
+                operation_budget=budget, value=budget-pms["C_op"])
+
+
+def workflow_curve(preds, params, taus=None):
+    """Curva de escenarios: las salidas usan las unidades de c_h/c_err suministradas."""
+    taus = np.linspace(0, 1, 101) if taus is None else taus
+    return pd.DataFrame([workflow_components(preds, tau, params) for tau in taus])

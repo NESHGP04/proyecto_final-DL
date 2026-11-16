@@ -1,0 +1,26 @@
+{
+  "split": "val",
+  "seed": 42,
+  "n_train": 12600,
+  "n_val": 2688,
+  "source_model": "src.models.m0_tfidf_svm.build_model",
+  "labels": [
+    "laboral",
+    "civil",
+    "mercantil",
+    "penal",
+    "familia",
+    "otros"
+  ],
+  "python": "3.14.7",
+  "sklearn": "1.9.1",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "changes": [
+    "C",
+    "ngram_range"
+  ],
+  "selection": "F1 macro máximo en validación; primer máximo en empates. Baseline primero.",
+  "adoption": "Ninguna: no se modificó la configuración ni se sustituyeron predicciones.",
+  "caveat": "Búsqueda exploratoria en val; no reportar su mejor resultado como evaluación independiente."
+}

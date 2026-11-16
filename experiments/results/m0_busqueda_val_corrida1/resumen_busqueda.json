@@ -1,0 +1,42 @@
+{
+  "estado": "completa",
+  "configuraciones": 6,
+  "baseline": {
+    "orden": 1,
+    "C": 1.0,
+    "ngram_min": 1,
+    "ngram_max": 2,
+    "es_base": true,
+    "f1_macro": 0.7805974154099952,
+    "exactitud": 0.7805059523809523,
+    "train_seconds": 2.440698166959919,
+    "inference_ms_per_text": 0.08333840213752064,
+    "n_features": 120032,
+    "recall_laboral": 0.7333333333333333,
+    "recall_civil": 0.621380846325167,
+    "recall_mercantil": 0.7941834451901566,
+    "recall_penal": 0.8530066815144766,
+    "recall_familia": 0.9571106094808126,
+    "recall_otros": 0.7266666666666667
+  },
+  "mejor_exploratorio": {
+    "orden": 6,
+    "C": 2.0,
+    "ngram_min": 1,
+    "ngram_max": 3,
+    "es_base": false,
+    "f1_macro": 0.7806209638258191,
+    "exactitud": 0.7801339285714286,
+    "train_seconds": 4.781983332941309,
+    "inference_ms_per_text": 0.1270335130487053,
+    "n_features": 234746,
+    "recall_laboral": 0.7311111111111112,
+    "recall_civil": 0.6258351893095768,
+    "recall_mercantil": 0.785234899328859,
+    "recall_penal": 0.8530066815144766,
+    "recall_familia": 0.9593679458239278,
+    "recall_otros": 0.7288888888888889
+  },
+  "delta_f1_vs_base": 2.3548415823970714e-05,
+  "conclusion": "Revisar antes de decidir adopción. No cambió ningún modelo activo ni se abrió test."
+}

@@ -1,0 +1,106 @@
+CP3/CP4 — ESCENARIOS DE ORGANIZACIÓN CON CONFIRMACIÓN HUMANA
+
+QUÉ ES ESTE AVANCE
+Análisis reproducible en unidades de tiempo equivalente, sin atribuir un costo
+por hora o costo de error al bufete. Usa las predicciones existentes de SAIJ-val
+para explorar cobertura/confianza, las cifras de tiempo de la demo como hipótesis,
+y N=10 con la hipótesis adicional de una entrada elegible por caso judicial.
+No es una evaluación económica real ni una medición de eficiencia de M3/M4.
+
+DOS FUNCIONES, DOS INTERPRETACIONES
+value() original se conserva. workflow_components()/workflow_curve() añaden:
+- t_a: minutos de trabajo asistido en entradas aceptadas para sugerencia.
+- t_r: minutos EXTRA respecto al proceso manual en entradas enviadas a revisión.
+Tiempo neto mensual = N * [kappa*(t_m-t_a) - (1-kappa)*t_r].
+Exposición neta a sugerencias incorrectas = N*kappa*[(1-p)-e_0].
+Valor = tiempo_neto/60*c_h - exposición*c_err - C_op.
+Con t_a=t_r=0 recupera la fórmula inicial. Con todos rechazados, no se ignora
+el sobrecosto t_r. El tiempo manual de los rechazados ya está en la referencia
+y cancela; t_r solo representa trabajo adicional, no la revisión completa.
+
+Los aceptados siguen recibiendo confirmación humana. El proxy penaliza todas
+las sugerencias incorrectas como escenario conservador: no se midió cuántas
+corrige efectivamente el abogado ni los errores finales de la etiqueta confirmada.
+p y kappa vienen de SAIJ, no de documentación del bufete. e_0=0 es una hipótesis
+que evita acreditar mejora de errores manuales no medidos; no es dato observado.
+
+UNIDADES Y PUNTO DE EQUILIBRIO
+Se fija c_h=1 como normalización matemática. Si una sugerencia errónea cuesta
+lo mismo que L minutos del rol, c_err=L/60. Se prueban L=0,5,15,30,60, valores
+analíticos arbitrarios, no estimaciones obtenidas del bufete. C_op=0 se usa para
+obtener el máximo presupuesto disponible ANTES de operación, no como afirmación
+de que operar sea gratis. Los resultados son horas equivalentes, no quetzales.
+Para convertir, B_GTQ = B_horas_equivalentes * c_h_real_GTQ_por_hora,
+SI se acepta también que c_err_real = L/60*c_h_real y los demás supuestos.
+Valor neto = B_GTQ - C_op_real. Sin esos datos, el signo real no está establecido.
+Un presupuesto máximo negativo no admite costo operativo positivo en ese escenario.
+
+ESCENARIOS
+sin_ahorro: t_a=t_m=9,5; no sobrecosto de revisión. Sin ahorro y sin acreditar
+reducción de errores, el máximo presupuesto es cero; cualquier operación positiva
+lo vuelve negativo. No genera beneficios de búsqueda no medidos.
+referencia_demo: t_a=4,325, media de 3:09 y 5:30 en demo; t_m=9,5; t_r=0.
+Aplicar ese tiempo a aceptados de los cinco modelos es hipótesis, no resultado.
+demo_revision_extra: mismo tiempo demo y un minuto extra por rechazado, como
+estrés hipotético. Ese minuto no se midió ni se presenta como dato del bufete.
+
+HALLAZGOS CONDICIONALES
+Si las diez entradas pudieran aprovechar toda la diferencia demo de 5,175 minutos,
+la capacidad temporal sería 51,75 minutos/mes antes de errores, rechazo y operación.
+No es un ahorro observado. Con menos entradas aceptadas o sobrecosto de revisión,
+se reduce. N=10 no estima todos los documentos o trámites del bufete.
+
+Con L=15 minutos hipotéticos por error, sin sobrecosto de revisión y probabilidades
+originales, el máximo presupuesto es aproximadamente 23,59 minutos equivalentes
+para M0, 21,38 M1, 16,66 M2, 27,19 M3 y 27,25 M4. Son máximos optimizados en val.
+La mejora de M4 sobre M3 es solo 0,06864 minutos equivalentes mensuales en esa
+semilla/escenario. Si su operación adicional supera ese margen, se pierde la
+ventaja bajo estas hipótesis. No es evidencia de rentabilidad o de superioridad
+estadística. Con un minuto adicional por rechazado, M3 queda por encima de M4
+para L=15: el orden depende del proceso y de la penalización, no solo del F1.
+La calibración se compara con sus propios umbrales. No cambia la clase predicha;
+puede cambiar aceptación y presupuesto. Se ajustó sobre la misma validación y
+sus cifras son in-sample, no una evaluación independiente.
+
+ARCHIVOS
+curvas_componentes.csv: 3030 puntos, tres escenarios por cinco modelos y dos
+variantes (original y temperatura). value/operation_budget se expresan en horas
+equivalentes antes de operación, con penalización cero en esta tabla de componentes.
+presupuestos_equilibrio.csv: 150 máximos por escenario, modelo, variante y L.
+deltas_presupuesto.csv: diferencias de máximos M2-M3, M3-M4 y contra M0. Comparan
+umbrales analíticos específicos, no una política común adoptada.
+sensibilidad_tau_fijo.csv: 900 observaciones, un factor a la vez en N,t_m,t_a,t_r,
+c_h,c_err. Tau se fija al máximo del escenario con L=15; no se reoptimiza por factor.
+Los factores 0,5/0,8/1/1,2/1,5 son estrés analítico, no intervalos de confianza.
+Cuando t_r=0 sus factores no cambian nada; el escenario adicional t_r=1 muestra
+su efecto. e_0=0 y C_op=0 no se multiplican para simular incertidumbre: sus límites
+y falta de medición se documentan; el punto de equilibrio permite variar C_op.
+variacion_semillas.csv: originales en 42/43/44 para M1-M4, solo 42 para M0.
+Cada semilla tiene su propio máximo analítico en la misma validación. No son IC.
+coeficientes_costo_computo.csv: tiempos medidos, origen y horas activas por diez
+inferencias. Multiplicar por precio/hora DARÍA costo activo, no costo mensual total.
+Faltan servidor en espera, mantenimiento y frecuencia de reentrenamiento. Equipos
+y condiciones de medición difieren: no concluir que M3 es intrínsecamente más
+rápido que M2. M2 incluye extracción de embeddings; M0 se midió en el Mac de Cami.
+
+VERIFICACIÓN
+11 funciones de prueba existentes/nuevas pasaron directamente en Python.
+Se validaron probabilidades, clases, IDs y etiquetas entre predicciones; temperatura
+conserva clases. Se comprobaron dimensiones, monotonía del presupuesto al aumentar
+penalización y contabilidad de sobrecosto. Se inspeccionaron las tres figuras.
+No se ejecutó la suite completa con pytest ni se entrenó. Solo se leyeron archivos
+*_val_preds.csv y run.json; no se abrió test, OCR o texto de clientes.
+
+REPRODUCIR
+Copiar los archivos de código/config y tener los resultados del proyecto disponibles.
+python -m src.value.analyze_workflow_scenarios --out experiments/results/cp3_cp4_revision2
+La salida debe ser nueva. No modifica modelos, serving, temperaturas ni umbral.
+configs/value_params.yaml conserva números históricos SOLO para reproducción,
+ahora rotulados como tales; value_params_bufete_pendiente.yaml conserva desconocidos.
+
+ESTADO
+CP3: evidencia y escenarios documentados; faltan unidades/tiempos reales y costos.
+CP4: búsqueda/errores M0 y análisis condicional/sensibilidad/deltas completados;
+faltan validación económica, costo total por versión y acuerdo de política final.
+CP5: Cami confirmó éxito, antiduplicado y registro CSV. API real pendiente.
+No se ejecutaron comandos Git ni se modificaron archivos de Nes.

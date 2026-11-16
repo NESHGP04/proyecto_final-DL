@@ -1,0 +1,11 @@
+{
+  "fuente": "Confirmación de Cami en conversación",
+  "fecha_confirmacion": "2026-11-16",
+  "confirmacion_visible": "verificada_por_Cami",
+  "prevencion_doble_click": "verificada_por_Cami",
+  "registro_correcciones_csv": "verificado_por_Cami",
+  "api_real": "pendiente_de_conectar",
+  "prueba_usabilidad_previa": "dos participantes en demo",
+  "medicion_con_modelo_real": "pendiente en CP3 tras integración API",
+  "pdf": "limitación documentada; solo TXT o texto pegado"
+}

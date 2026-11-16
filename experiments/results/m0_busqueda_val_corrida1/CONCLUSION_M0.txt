@@ -1,0 +1,57 @@
+CP4 — BÚSQUEDA PEQUEÑA DE M0 COMPLETADA
+
+RECOMENDACIÓN
+Conservar M0 original, C=1 y n-gramas (1,2). No se cambió el modelo activo ni
+se sustituyeron las predicciones originales de comparación.
+
+QUÉ SE PROBÓ
+Seis combinaciones: C en {0,5;1;2} y n-gramas (1,2)/(1,3). Se mantuvo el resto
+de build_model: TF-IDF sublinear_tf=True, min_df=2, SVM lineal balanceado y
+calibración interna sobre train. Semilla 42; 12600 train y 2688 val.
+La búsqueda se ejecutó en la computadora de Cami. No se abrió test.
+El entorno quedó registrado en configuracion_busqueda.json; difiere de las
+versiones fijadas inicialmente por Nes, y no se modifica requirements.txt.
+
+COMPARACIÓN
+Base: F1 macro 0,7805974154; exactitud 0,7805059524; 2098 aciertos.
+C=2 y n-gramas (1,3): F1 macro 0,7806209638; exactitud 0,7801339286;
+2097 aciertos. La diferencia de F1 es +0,0000235484, aproximadamente
++0,00235 puntos porcentuales. No es un empate exacto, aunque ambas se muestran
+como 0,7806 con cuatro decimales. La exactitud baja en un caso.
+
+En esta corrida, la base usa 120032 características y entrena en 2,44 s;
+el candidato usa 234746 y tarda 4,78 s. La latencia media observada sobre val
+es de 0,0833 y 0,1270 ms por texto, respectivamente. Son mediciones de una
+corrida local, sin repeticiones de benchmark ni control detallado del hardware;
+no compararlas directamente con latencias medidas en otros equipos.
+
+El beneficio diminuto de F1 no aporta una razón práctica suficiente para
+adoptar un vocabulario casi dos veces mayor en esta referencia. No se afirma
+que se haya demostrado equivalencia estadística ni calculado significancia.
+La selección usa val y no es una evaluación independiente del candidato.
+No se amplió la búsqueda después de ver estos seis resultados.
+
+EFECTO EN EL RESTO DEL PROYECTO
+Se conservan las predicciones y el análisis de errores de M0 ya utilizados.
+No hace falta recalcular las curvas ilustrativas por una sustitución de modelo,
+porque no se adoptó una nueva configuración. Sus limitaciones económicas y
+los parámetros pendientes siguen vigentes. La congelación final de todos los
+modelos y umbrales se coordina por separado con Nes antes de test.
+
+VERIFICACIÓN
+Se revisaron los tres archivos compartidos por Cami: combinaciones completas,
+semilla, tamaños, mejor resultado y delta concordantes entre CSV y JSON.
+No se reentrenó M0 en este entorno con los datos reales. La conclusión es
+una revisión de la corrida local reportada, no una nueva ejecución.
+Los resultados sintéticos de comprobación del auxiliar no se incluyen.
+
+ESTADO CP4
+Completados: revisión agregada de errores de M0 y búsqueda pequeña en val.
+Pendientes: completar/justificar parámetros económicos, costos por versión,
+revisión de escenarios de valor y acuerdo de calibración/umbral.
+Este avance NO cierra CP4 completo.
+
+PARA VERSIONAR
+Esta carpeta con sus CSV/JSON y conclusión: resúmenes pequeños, sin textos.
+El auxiliar buscar_m0_val.py sigue siendo personal, fuera del commit.
+No se ejecutaron comandos Git ni se cambiaron archivos de Nes.

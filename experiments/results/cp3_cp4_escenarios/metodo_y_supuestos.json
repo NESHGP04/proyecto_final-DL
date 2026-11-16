@@ -1,0 +1,70 @@
+{
+  "prediction_split": "val",
+  "n_validation": 2688,
+  "main_seed": 42,
+  "variants": [
+    "original",
+    "temperatura"
+  ],
+  "seed_check": [
+    42,
+    43,
+    44
+  ],
+  "units": "Horas equivalentes del costo/hora base; no GTQ ni retorno real",
+  "assumptions": {
+    "N": 10,
+    "unidad_N": "Supuesto de una entrada clasificada por cada nuevo caso judicial; los documentos y trámites adicionales no están cuantificados.",
+    "t_m": 9.5,
+    "fuente_t_m": "Media manual reportada de 9 y 10 minutos, n=2; no media poblacional.",
+    "e_0": 0.0,
+    "fuente_e_0": "Supuesto conservador para no acreditar reducción de errores manuales; no tasa observada.",
+    "c_h": 1.0,
+    "fuente_c_h": "Normalización matemática: horas equivalentes. No costo/hora real.",
+    "C_op": 0.0,
+    "fuente_C_op": "Punto de partida para calcular presupuesto máximo antes de operación, no operación gratuita.",
+    "escenarios": {
+      "sin_ahorro": {
+        "t_a": 9.5,
+        "t_r": 0.0,
+        "fuente": "Supuesto de tiempo asistido igual al manual; casos rechazados siguen flujo manual sin sobrecosto."
+      },
+      "referencia_demo": {
+        "t_a": 4.325,
+        "t_r": 0.0,
+        "fuente": "Media demo reportada 3:09 y 5:30, n=2. Aplicarla a aceptados es hipótesis, no medición de M0–M4. Rechazados sin sobrecosto: supuesto optimista."
+      },
+      "demo_revision_extra": {
+        "t_a": 4.325,
+        "t_r": 1.0,
+        "fuente": "Misma referencia demo; un minuto adicional por rechazado es estrés hipotético, no medición."
+      }
+    },
+    "error_minutes_grid": [
+      0,
+      5,
+      15,
+      30,
+      60
+    ],
+    "error_minutes_reference": 15,
+    "fuente_error_minutes": "Costo de sugerencia errónea / costo horario expresado en minutos equivalentes. Malla analítica arbitraria; no estimación del bufete ni error procesal.",
+    "sensitivity_factors": [
+      0.5,
+      0.8,
+      1.0,
+      1.2,
+      1.5
+    ],
+    "nota_errores": "Se penalizan todas las sugerencias incorrectas aceptadas como aproximación conservadora; corrección humana efectiva no medida. Tasas tomadas de SAIJ-val, no del bufete."
+  },
+  "policy": "Umbrales analíticos por escenario elegidos en la misma validación, no políticas adoptadas.",
+  "limitations": [
+    "Confianza y error de SAIJ; transferencia real no medida.",
+    "Temperatura ajustada sobre val; resultados in-sample.",
+    "Tiempo asistido procede de demo con dos participantes.",
+    "N=10 supone una unidad elegible por caso judicial.",
+    "Penalizar sugerencias erróneas no mide errores finales tras confirmación humana.",
+    "Precios de cómputo, costo por hora, costo de error y mantenimiento sin medir."
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "recomendacion": "Conservar M0 original: C=1.0 y ngram_range=(1,2)",
+  "aplicacion": "No hubo cambio de código, pesos, configuración ni predicciones; no implica congelación global para test.",
+  "base_f1": 0.7805974154099952,
+  "maximo_exploratorio_f1": 0.7806209638258191,
+  "delta_f1": 2.3548415823970714e-05,
+  "delta_puntos_porcentuales": 0.0023548415823970714,
+  "base_aciertos": 2098,
+  "candidato_aciertos": 2097,
+  "ratio_features": 1.9556951479605438,
+  "ratio_tiempo_entrenamiento": 1.9592686214443484,
+  "ratio_latencia": 1.52430943947163,
+  "comprobaciones": "Seis combinaciones previstas; resumen coincide con CSV; semilla y tamaños coherentes.",
+  "significancia": "No evaluada; no se dispone de predicciones pareadas de los candidatos para esta comprobación."
+}

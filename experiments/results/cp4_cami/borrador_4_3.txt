@@ -1,0 +1,47 @@
+4.3 Modelo de valor — borrador provisional para revisar
+
+El valor mensual se estimó mediante la función definida en el proyecto, que
+combina el tiempo de clasificación ahorrado, la diferencia de errores frente
+al proceso manual y el costo operativo. Para cada umbral de confianza se
+calculó la cobertura automática y la precisión de los casos aceptados.
+Los casos restantes se derivan a revisión humana.
+
+Se utilizaron las predicciones sin calibrar de validación de M0 a M4, con
+2688 identificadores y etiquetas coincidentes. Se exploraron umbrales entre
+0 y 1 en incrementos de 0,01, seleccionando el primer máximo de cada curva.
+Esta comparación usa las salidas principales de semilla 42; no representa
+una media de valor sobre las tres semillas.
+
+Los parámetros actuales son marcadores de posición: 300 casos mensuales,
+6 minutos por clasificación, 50 unidades monetarias por hora, error manual
+estimado de 0,10, costo de error de 40 unidades monetarias y costo operativo
+mensual igual a cero. Todos están identificados como supuesto y requieren
+confirmación o una justificación expresa antes de la entrega.
+
+Bajo ese escenario, M0 alcanza 967,30 unidades monetarias/mes con tau=0,66;
+M1, 868,30 con tau=0,83; M2, 629,35 con tau=0,85; M3, 1159,60 con tau=0,90;
+y M4, 1234,60 con tau=0,97. M3 aporta 530,25 respecto de M2 y M4 aporta
+75,00 respecto de M3, antes de incorporar costos operativos diferentes.
+Así, con estos parámetros y umbrales fijos, un costo mensual adicional de M4
+superior a 75 unidades monetarias respecto de M3 eliminaría su ventaja.
+M3 supera a M0 en 192,30 unidades monetarias bajo el mismo escenario.
+
+M3 automatiza el 65,10 % de validación y acierta el 92,34 % de los casos
+aceptados; M4 automatiza el 62,43 % y acierta el 93,98 %. Los umbrales son
+específicos de cada modelo y de la variante de probabilidades empleada.
+No deben trasladarse a probabilidades calibradas sin volver a elegirlos.
+
+La sensibilidad se analizó variando individualmente cada parámetro en ±20 %
+y ±50 %, manteniendo fijo el umbral de cada modelo. Como multiplicar un costo
+operativo inicial de cero no genera variación, se añadieron escenarios con
+los extremos 0 y 200 ya definidos en el YAML. Estos no equivalen a costos
+medidos por versión. Las latencias disponibles usan hardware distinto y no
+permiten deducir directamente una comparación homogénea de costos.
+
+Los datos de validación corresponden, según la documentación de tareas,
+a SAIJ, un proxy argentino de resúmenes judiciales. Las curvas no prueban
+ahorro en consultas reales del bufete guatemalteco. Además, elegir y evaluar
+el umbral sobre la misma validación puede sobreestimar su valor. El umbral
+y la calibración deberán congelarse antes de la evaluación final en test.
+El análisis todavía no incluye ajuste de M0, costos operativos por modelo ni
+validación económica con el bufete; por ello CP4 permanece parcialmente completo.

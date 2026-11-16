@@ -1,0 +1,9 @@
+parametro,estado,valor_conocido,unidad,falta
+N,estimacion_acotada,10,casos_judiciales_nuevos/mes,Confirmar cuántos documentos o unidades se clasifican por caso; no incluir trámites no cuantificados
+t_m,muestra_exploratoria_n2,9.5,minutos/tarea_manual,Asegurar misma tarea y medir con definición temporal consistente
+t_a,solo_demo_n2,4.325,minutos/tarea_asistida_demo,Repetir con API/modelo real; no suponer que valdrá para todas las versiones
+t_r,desconocido,,minutos_extra/rechazado,Medir trabajo adicional de solicitudes enviadas a revisión
+c_h,desconocido,,GTQ/hora_rol_abogado,Estimación por rol con fuente o supuesto justificado; no honorario por consulta
+e_0,cualitativo_sin_tasa,,fraccion,No se cuantificó; conservar limitación o definir escenario supuesto explícito
+c_err,desconocido,,GTQ/sugerencia_o_etiqueta_erronea,Definir consecuencia de etiquetado/organización; no error procesal
+C_op,pendiente_por_version,,GTQ/mes,"Precio, modalidad de ejecución, mantenimiento y reentrenamiento"

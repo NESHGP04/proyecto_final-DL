@@ -1,0 +1,16 @@
+{
+  "status": "passed",
+  "unit_functions": 11,
+  "full_pytest_suite": false,
+  "checks": [
+    "3030 curvas/150 presupuestos/195 observaciones de semillas",
+    "presupuesto no aumenta al encarecer sugerencias erróneas",
+    "sin ahorro temporal y sin crédito de error: presupuesto máximo cero",
+    "sobrecosto de revisión descontado según fracción rechazada",
+    "capacidad condicional de tiempo completo 51,75 min por 10 entradas",
+    "identidad de IDs/etiquetas y probabilidades validada entre todos los archivos",
+    "calibración por temperatura conserva clases",
+    "11 funciones de prueba existentes/nuevas ejecutadas directamente"
+  ],
+  "source": "Predicciones de validación disponibles; no OCR ni textos de clientes ni test"
+}

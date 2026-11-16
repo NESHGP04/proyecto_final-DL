@@ -1,0 +1,6 @@
+model,source,device,inference_ms_per_text,active_inference_hours_per_scenario_month,train_seconds,total_train_seconds,head_train_seconds,embed_seconds
+m0,m0_busqueda_val_corrida1/resumen_busqueda.json,equipo local de Cami; hardware no registrado,0.08333840213752064,2.3149556149311288e-07,2.440698166959919,,,
+m1,m1_val_run.json,no registrado,0.596,1.6555555555555555e-06,594.82,,,
+m2,m2_val_run.json,mps,48.79,0.00013552777777777776,,,6.51,745.93
+m3,m3_val_run.json,cuda,2.19,6.083333333333333e-06,1002.72,,,
+m4,m4_val_run.json,cuda,1.93,5.361111111111112e-06,977.27,4314.76,,

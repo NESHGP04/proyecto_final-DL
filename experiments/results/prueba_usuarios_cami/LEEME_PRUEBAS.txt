@@ -30,8 +30,9 @@ PDF en esta actualización. No convertir datos sintéticos de clasificación en
 métricas de precisión: aquí se reportan tiempos humanos, no aciertos del modelo.
 
 Se añadió al dashboard confirmación de registro y protección de reenvío
-consecutivo idéntico por sesión. Pendiente de repetir prueba con personas;
-la mejora de interfaz no se considera validada automáticamente por estas pruebas.
+consecutivo idéntico por sesión. Cami confirmó posteriormente la confirmación visible, prevención de doble clic
+y registro de correcciones CSV. Esta confirmación funcional no es una nueva
+medición cronometrada con modelo real ni una repetición documentada con dos usuarios.
 
 Para el repo: estos CSV agregados, resumen JSON y LEEME si el equipo desea
 conservar evidencia anonimizada. No contienen datos de clientes ni informantes.
