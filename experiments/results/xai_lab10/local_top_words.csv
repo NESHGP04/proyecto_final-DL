@@ -1,0 +1,81 @@
+rol,case_id,explicacion,palabra,atribucion
+acierto_alta_confianza,J-fam-01540,explica: familia,divorcio,1.0
+acierto_alta_confianza,J-fam-01540,explica: familia,filiación,0.5163987680130026
+acierto_alta_confianza,J-fam-01540,explica: familia,madre,0.32868219519988395
+acierto_alta_confianza,J-fam-01540,explica: familia,familia,0.31352959147709764
+acierto_alta_confianza,J-fam-01540,explica: familia,familia,0.2761482216909298
+acierto_alta_confianza,J-fam-01540,explica: familia,violencia,0.22545721282488076
+acierto_alta_confianza,J-fam-01540,explica: familia,menor,0.17815082059249127
+acierto_alta_confianza,J-fam-01540,explica: familia,familiar,0.17693458737822237
+acierto_alta_confianza,J-fam-01540,explica: familia,proceso,0.1482694444113885
+acierto_alta_confianza,J-fam-01540,explica: familia,familiar,0.1358915751570012
+error_alta_confianza,J-civ-01713,explica: laboral,trabajador,1.0
+error_alta_confianza,J-civ-01713,explica: laboral,inerte,0.3634091009911927
+error_alta_confianza,J-civ-01713,explica: laboral,al,0.33633807894552686
+error_alta_confianza,J-civ-01713,explica: laboral,obligándolo,0.2946456715605662
+error_alta_confianza,J-civ-01713,explica: laboral,minusvalía,0.27680083236696623
+error_alta_confianza,J-civ-01713,explica: laboral,inmóvil,0.2633049054272342
+error_alta_confianza,J-civ-01713,explica: laboral,operar,0.2120854514267244
+error_alta_confianza,J-civ-01713,explica: laboral,máxime,0.20606793534629264
+error_alta_confianza,J-civ-01713,explica: laboral,causantes,0.2031924139974941
+error_alta_confianza,J-civ-01713,explica: laboral,cc,0.18566135123111835
+error_alta_confianza,J-civ-01713,clase real: civil,trabajador,-1.0
+error_alta_confianza,J-civ-01713,clase real: civil,inmóvil,0.4947927259458318
+error_alta_confianza,J-civ-01713,clase real: civil,al,-0.493299532690762
+error_alta_confianza,J-civ-01713,clase real: civil,",",-0.4929857258127164
+error_alta_confianza,J-civ-01713,clase real: civil,",",-0.47690516054459425
+error_alta_confianza,J-civ-01713,clase real: civil,.,-0.4489059358149532
+error_alta_confianza,J-civ-01713,clase real: civil,operar,-0.3685096237362332
+error_alta_confianza,J-civ-01713,clase real: civil,cuando,-0.3520708228600918
+error_alta_confianza,J-civ-01713,clase real: civil,p,0.3203267026767907
+error_alta_confianza,J-civ-01713,clase real: civil,1113,0.3160264602974524
+cerca_del_umbral,J-civ-01775,explica: civil,sentencia,1.0
+cerca_del_umbral,J-civ-01775,explica: civil,jueces,0.7549221201728264
+cerca_del_umbral,J-civ-01775,explica: civil,bienes,0.438502880106323
+cerca_del_umbral,J-civ-01775,explica: civil,p,0.42827878180907725
+cerca_del_umbral,J-civ-01775,explica: civil,arbitraria,0.40780660699453986
+cerca_del_umbral,J-civ-01775,explica: civil,interpretación,0.3990081749267698
+cerca_del_umbral,J-civ-01775,explica: civil,una,0.3865138760169986
+cerca_del_umbral,J-civ-01775,explica: civil,privativa,0.3778057380524761
+cerca_del_umbral,J-civ-01775,explica: civil,necesario,0.325398403494321
+cerca_del_umbral,J-civ-01775,explica: civil,convertir,0.29021412335770663
+subgrupo_clase_debil,J-civ-01656,explica: laboral,impugnado,1.0
+subgrupo_clase_debil,J-civ-01656,explica: laboral,irrazonable,0.8883185021179468
+subgrupo_clase_debil,J-civ-01656,explica: laboral,inconstitucionalidad,0.8354561265828154
+subgrupo_clase_debil,J-civ-01656,explica: laboral,improcedente,0.8203610836765176
+subgrupo_clase_debil,J-civ-01656,explica: laboral,fallo,0.7813083068262134
+subgrupo_clase_debil,J-civ-01656,explica: laboral,causa,0.675585693886725
+subgrupo_clase_debil,J-civ-01656,explica: laboral,hecho,0.6721286357630938
+subgrupo_clase_debil,J-civ-01656,explica: laboral,sentencia,0.6140147117081305
+subgrupo_clase_debil,J-civ-01656,explica: laboral,sentencias,0.5701438602805091
+subgrupo_clase_debil,J-civ-01656,explica: laboral,y,0.5552013195516836
+subgrupo_clase_debil,J-civ-01656,clase real: civil,irrazonable,1.0
+subgrupo_clase_debil,J-civ-01656,clase real: civil,inconstitucionalidad,-0.9718795274956856
+subgrupo_clase_debil,J-civ-01656,clase real: civil,improcedente,0.6632996963408697
+subgrupo_clase_debil,J-civ-01656,clase real: civil,causa,0.5740944579634761
+subgrupo_clase_debil,J-civ-01656,clase real: civil,",",-0.5412211606622089
+subgrupo_clase_debil,J-civ-01656,clase real: civil,p,0.5182212123130895
+subgrupo_clase_debil,J-civ-01656,clase real: civil,arbitrariedad,0.5099207098924478
+subgrupo_clase_debil,J-civ-01656,clase real: civil,la,0.4740194526482402
+subgrupo_clase_debil,J-civ-01656,clase real: civil,habilitarían,0.409701922939975
+subgrupo_clase_debil,J-civ-01656,clase real: civil,sentencia,0.4026143239045595
+error_tipico_civil_como_otros,J-civ-00169,explica: otros,administrativo,1.0
+error_tipico_civil_como_otros,J-civ-00169,explica: otros,amparo,0.7252449855883265
+error_tipico_civil_como_otros,J-civ-00169,explica: otros,provincia,0.36304436061393525
+error_tipico_civil_como_otros,J-civ-00169,explica: otros,menor,-0.34114076659777015
+error_tipico_civil_como_otros,J-civ-00169,explica: otros,constitución,0.332563124453028
+error_tipico_civil_como_otros,J-civ-00169,explica: otros,psicopedagogía,0.22179416114082906
+error_tipico_civil_como_otros,J-civ-00169,explica: otros,acción,0.20962232540671383
+error_tipico_civil_como_otros,J-civ-00169,explica: otros,brindarse,-0.20089976955286604
+error_tipico_civil_como_otros,J-civ-00169,explica: otros,trámite,0.19811423155288332
+error_tipico_civil_como_otros,J-civ-00169,explica: otros,afiliada,0.1695827330383321
+error_tipico_civil_como_otros,J-civ-00169,clase real: civil,amparo,-1.0
+error_tipico_civil_como_otros,J-civ-00169,clase real: civil,menor,0.5428348438187166
+error_tipico_civil_como_otros,J-civ-00169,clase real: civil,administrativo,-0.4030978796531916
+error_tipico_civil_como_otros,J-civ-00169,clase real: civil,acción,-0.35964428709655216
+error_tipico_civil_como_otros,J-civ-00169,clase real: civil,brindarse,0.30875083488503524
+error_tipico_civil_como_otros,J-civ-00169,clase real: civil,escolar,0.21651955373382342
+error_tipico_civil_como_otros,J-civ-00169,clase real: civil,uuid,0.2028161734852105
+error_tipico_civil_como_otros,J-civ-00169,clase real: civil,",",-0.1902660240323813
+error_tipico_civil_como_otros,J-civ-00169,clase real: civil,denota,0.18055625024955316
+error_tipico_civil_como_otros,J-civ-00169,clase real: civil,prescripción,0.1741214726778103

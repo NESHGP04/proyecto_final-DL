@@ -132,3 +132,11 @@ tests/
 - La anonimización por reglas (`src/data/anonymize.py`) es heurística y no garantiza quitar todo dato personal.
 - Los pesos entrenados con datos del bufete no se publican: un modelo con fine-tuning puede memorizar texto de entrenamiento.
 - El modelo de valor usa parámetros estimados con el bufete o marcados como supuesto en `value_params.yaml`.
+
+## Explicabilidad (Lab 10)
+
+Regenera todas las figuras y tablas del informe (semilla 42, requiere los pesos de M3 en artifacts/):
+
+    python -m src.explain.xai_lab10 --model m3 --split val
+
+Salida en experiments/results/xai_lab10/. Con --split test hay que añadir --confirm-final.

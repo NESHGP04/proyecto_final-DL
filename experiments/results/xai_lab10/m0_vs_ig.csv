@@ -1,0 +1,7 @@
+clase,top_m0,top_ig,jaccard
+laboral,"laboral, trabajo, trabajador, empleador, lct, despido, trabajadores, laborales, sindical, empleadora","laboral, trabajador, contrato, salario, trabajo, lct, indemnizatorio, ct000, inconstitucionalidad, uuid",0.25
+civil,"civil, daños, daño, desalojo, tránsito, propietario, cpcc, lucro, posesión, tercero","desalojo, ct001, demandado, civil, fortuito, código, prescripción, uuid, juez, cosa",0.1111111111111111
+mercantil,"quiebra, concursal, cpr, síndico, cciv, concurso, consumidor, lc, marca, concursos","quiebra, concursales, cuenta, banco, empresa, bienes, concursal, acreedores, ejecutivo, convenio",0.1111111111111111
+penal,"penal, delito, imputado, procesado, delitos, pena, querellante, robo, fiscal, imputados","delito, penal, pena, víctima, autor, procedimiento, imputado, código, defensa, fiscal",0.3333333333333333
+familia,"divorcio, filiación, alimentaria, adopción, cuota, conyugal, familia, cónyuge, alimentos, patria","adopción, alimentaria, conyugal, padres, divorcio, niño, patria, potestad, padre, menor",0.3333333333333333
+otros,"administrativo, administrativa, administración, amparo, previsional, contencioso, provincial, agente, corte, municipal","ley, amparo, defensa, educación, gcba, voto, c, (, haber, ni",0.05263157894736842

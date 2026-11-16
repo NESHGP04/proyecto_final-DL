@@ -1,0 +1,6 @@
+rol,case_id,y_true,y_pred,conf,canal,fuente_texto,tokens,error_completitud
+acierto_alta_confianza,J-fam-01540,familia,familia,0.9887932,documento,nativo,125,0.0006843880593372173
+error_alta_confianza,J-civ-01713,civil,laboral,0.98220706,documento,nativo,69,0.01875070213309713
+cerca_del_umbral,J-civ-01775,civil,civil,0.69999903,documento,nativo,57,0.08621558062091976
+subgrupo_clase_debil,J-civ-01656,civil,laboral,0.29863197,documento,nativo,88,0.021144008119449033
+error_tipico_civil_como_otros,J-civ-00169,civil,otros,0.5987732,documento,nativo,192,0.005181099513187812
