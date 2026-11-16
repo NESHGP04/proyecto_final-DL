@@ -1,48 +1,53 @@
-CP2 — RESULTADOS SAIJ COMPARTIDOS POR CAMI
+CP2 — EDA SAIJ Y PILOTO: VERSIÓN DE 47 FRAGMENTOS REVISADOS
 
-Las tablas proceden de las salidas agregadas que Cami compartió tras ejecutar
-el notebook localmente con sus archivos. Los datos de texto no están disponibles
-aquí y no se reejecutó el EDA completo en este entorno. Los porcentajes de
-menciones se conservan con la precisión compartida (un decimal).
-La similitud y duplicados se transcriben de la captura compartida; no se incluye
-la captura en el paquete. No se usaron textos ni datos personales.
+FUENTE Y ALCANCE
+Resultados agregados y capturas compartidos por Cami de la ejecución local del
+notebook eda.ipynb. Esta versión sustituye los resúmenes anteriores del piloto
+con 46 fragmentos. No se recibieron los textos para este análisis y no se
+reejecutó el EDA con datos reales en este entorno. No se incluyen las capturas.
 
-COMPROBACIONES DE TRANSCRIPCIÓN
-Train suma 12600 y val 2688. La procedencia de etiquetas suma 15288 registros;
-2543 de familia figuran íntegramente como palabras_clave y no como materia.
-Los tamaños de las tablas de longitudes coinciden con los de las particiones.
-No se derivan resultados de test, conteos por materia de tablas truncadas ni
-frecuencias absolutas a partir de porcentajes redondeados de menciones.
+RESULTADOS SAIJ
+Train: 12600 registros, 2100 por clase; val: 2688, casi equilibrado.
+Todo el conjunto analizado figura como documento y texto nativo.
+Los 2543 registros de familia en train+val tienen etiqueta palabras_clave.
+Medianas de longitud: train 89 palabras; val 90.
+Cero duplicados exactos/normalizados en train/val y cero coincidencias normalizadas
+entre ellos; ningún val con coseno TF-IDF >=0,90 contra train (máximo 0,882280).
+No confundir estos controles con garantía de ausencia de todas las fugas.
 
-INTERPRETACIÓN
-Balance diseñado, no estimación de frecuencia real del bufete. Longitud similar
-entre train y val, sin demostrar equivalencia de dominio. Ausencia de duplicados
-según las comprobaciones aplicadas, sin garantizar ausencia de fugas por
-expediente, fuente o construcción de etiquetas. Familia: etiqueta débil en
-todos los ejemplos observados de train+val. Otros: mezcla de materias; falta
-la tabla completa si se desea presentar porcentajes por submateria.
-Los patrones de mención del área del notebook no equivalen a todas las reglas
-usadas para construir familia; el 60 % de menciones no contradice el 100 % de
-etiquetado por palabras clave. Las menciones tribunal/cámara/sala pueden solaparse,
-por lo que sus porcentajes no deben sumarse como unión.
+PILOTO ACTUAL
+La salida local indica 47/47 fragmentos revisados utilizables. Longitudes:
+mínimo 125; p10 152; mediana 167; p90 207,2; máximo 231 palabras.
+Proceden de un solo expediente laboral. La segmentación con longitud objetivo
+influye en la distribución; no atribuir diferencias solo a procedencia o canal.
+No equivalen a 47 casos independientes ni constituyen prueba de seis clases.
 
-ESTADO DE CP2
-Parte SAIJ ejecutada por Cami y resultados agregados documentados.
-Comparación de vocabulario y longitudes realizada sobre 46 fragmentos utilizables
-de un total de 47. El restante continúa excluido y requiere comprobación local.
-No se consideran aprobados los 47 por esta ejecución. CER y autorización de uso
-se documentan por separado en CP1.
-Revisión de licencias y escritura final deben completarse antes de la entrega.
-Antes de versionar el notebook, borrar salidas y conservar estos agregados.
-No se cambiaron modelos, splits, configuración ni archivos de Nes.
+VOCABULARIO
+Tipos SAIJ-train: 32910; piloto: 1134; compartidos: 1049; exclusivos del piloto: 85.
+El 92,50 % de los tipos del piloto aparece en SAIJ-train; 7,50 % es exclusivo.
+Estos cuatro conteos se mantienen respecto de la ejecución de 46 fragmentos,
+pero los porcentajes por término sí cambian. Esta tabla usa denominador 47.
+Las formas se definen por normalización y filtros del notebook, no por los
+tokens BETO. No inferir desempeño del clasificador ni equivalencia de dominio.
+SAIJ reúne seis áreas; el piloto solo laboral. Diferencias pueden depender de
+clase, país, canal, selección de hechos, segmentación, anonimización y OCR.
+Los corpus tienen tamaños distintos: no comparar riqueza léxica por conteo bruto.
 
-ACTUALIZACIÓN: PILOTO REVISADO
-Se incorporaron las salidas agregadas de vocabulario y longitudes compartidas
-por Cami. No se recibieron textos del piloto para este análisis. El tamaño
-utilizado es 46. Vocabulario compartido: 1049 de 1134 tipos, 92,50 %. La mediana
-del piloto es 168 palabras frente a 89 en train y 90 en val. Los fragmentos
-se construyeron con segmentación de longitud objetivo; esa decisión influye en
-la comparación de longitudes y no debe atribuirse únicamente al dominio.
-Los porcentajes por término están redondeados a una decimal: cero no demuestra
-ausencia absoluta. Los tamaños de corpus son muy distintos. No se infiere
-riqueza léxica comparable ni desempeño del clasificador a partir de estos conteos.
+PROCEDENCIA Y PRECISIÓN
+Los porcentajes de menciones y términos están transcritos con una decimal.
+Un 0,0 % no demuestra ausencia absoluta. Las menciones tribunal/cámara/sala
+pueden solaparse: no sumar sus porcentajes para contar una unión.
+El patrón exploratorio del área no equivale a todas las reglas de familia;
+el 60 % de menciones no contradice el 100 % de etiquetado por palabras clave.
+Las tablas completas de materias ya se recibieron y comprobaron. Sus originales
+se conservan en composicion_familia.csv y composicion_otros.csv; los resúmenes
+separados preservan los totales y no cuentan materias combinadas varias veces.
+No se derivaron resultados de test ni predicciones del piloto.
+
+ESTADO
+Comparación de longitudes y vocabulario completada con 47 revisados según reporte
+local. CER y autorización de uso se documentaron en CP1 por separado. Las referencias/licencias y la composición completa de materias ya fueron
+documentadas para la sección 4.2. El EDA de CP2 queda completado.
+La revisión humana reportada no es una garantía técnica de anonimización total.
+Antes de versionar el notebook, borrar salidas; los CSV aquí son agregados sin
+textos ni IDs del piloto. No se modificaron modelos ni se ejecutó Git.

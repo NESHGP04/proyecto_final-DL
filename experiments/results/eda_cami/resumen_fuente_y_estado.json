@@ -20,8 +20,10 @@
   "media_coseno_val_train": 0.241332,
   "piloto": "activado: 47 de 47 fragmentos utilizables según salida local de Cami",
   "brecha_vocabulario": "calculada localmente sobre 47 fragmentos; salidas agregadas compartidas",
-  "composicion_materias": "tablas compartidas truncadas; sin distribución completa por materia",
+  "composicion_materias": "CSV completos de Cami revisados: familia 71 filas y otros 77 filas agregadas; totales y porcentajes comprobados",
   "fragmentos_piloto_total": 47,
   "fragmentos_piloto_utilizados": 47,
-  "fragmentos_excluidos": 0
+  "fragmentos_excluidos": 0,
+  "cp2_estado": "Completado: EDA ejecutado localmente, composición completa, comparación de piloto revisado, licencias documentadas y sección 4.2 actualizada",
+  "fecha_cierre": "2026-11-16"
 }

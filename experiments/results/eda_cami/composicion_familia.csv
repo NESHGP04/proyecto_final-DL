@@ -1,0 +1,72 @@
+split,materia_original,etiqueta,casos,porcentaje_en_area_split
+train,CIVIL,palabras_clave,1603,76.3333
+train,PROCESAL-CIVIL,palabras_clave,133,6.3333
+train,CIVIL-PROCESAL,palabras_clave,109,5.1905
+train,PROCESAL - CIVIL,palabras_clave,47,2.2381
+train,CIVIL-CONSTITUCIONAL,palabras_clave,43,2.0476
+train,CIVIL-DERECHOS HUMANOS,palabras_clave,26,1.2381
+train,CONSTITUCIONAL-CIVIL,palabras_clave,23,1.0952
+train,CIVIL - PROCESAL,palabras_clave,17,0.8095
+train,PROCESAL CIVIL,palabras_clave,13,0.619
+train,CONSTITUCIONAL - CIVIL,palabras_clave,12,0.5714
+train,CIVIL-DERECHOS HUMANOS-PROCESAL,palabras_clave,7,0.3333
+train,CONSTITUCIONAL - CIVIL - PROCESAL,palabras_clave,7,0.3333
+train,CONSTITUCIONAL - PROCESAL - CIVIL,palabras_clave,7,0.3333
+train,ADMINISTRATIVO-CIVIL,palabras_clave,4,0.1905
+train,CONSTITUCIONAL-CIVIL-PROCESAL,palabras_clave,4,0.1905
+train,PROCESAL - CONSTITUCIONAL - CIVIL,palabras_clave,3,0.1429
+train,PROCESAL-CIVIL-CONSTITUCIONAL,palabras_clave,3,0.1429
+train,CIVIL - CONSTITUCIONAL,palabras_clave,2,0.0952
+train,CIVIL - CONSTITUCIONAL - PROCESAL,palabras_clave,2,0.0952
+train,CIVIL - SEGURIDAD SOCIAL,palabras_clave,2,0.0952
+train,CIVIL-CONSTITUCIONAL-DERECHOS HUMANOS,palabras_clave,2,0.0952
+train,CIVIL-ECONOMIA,palabras_clave,2,0.0952
+train,CIVIL-INFORMATICO,palabras_clave,2,0.0952
+train,CIVIL-PROCESAL-DERECHOS HUMANOS,palabras_clave,2,0.0952
+train,DERECHOS HUMANOS-CIVIL,palabras_clave,2,0.0952
+train,SEGURIDAD SOCIAL - CIVIL,palabras_clave,2,0.0952
+train,ADMINISTRATIVO - CIVIL,palabras_clave,1,0.0476
+train,ADMINISTRATIVO - PROCESAL CIVIL,palabras_clave,1,0.0476
+train,ADMINISTRATIVO-SEGURIDAD SOCIAL-CIVIL,palabras_clave,1,0.0476
+train,CIVIL - ADMINISTRATIVO,palabras_clave,1,0.0476
+train,CIVIL-ADMINISTRATIVO,palabras_clave,1,0.0476
+train,CIVIL-ADMINISTRATIVO-PROCESAL,palabras_clave,1,0.0476
+train,CIVIL-BANCARIO,palabras_clave,1,0.0476
+train,CIVIL-CONSTITUCIONAL-PROCESAL,palabras_clave,1,0.0476
+train,CIVIL-CULTURA-EDUCACION,palabras_clave,1,0.0476
+train,CIVIL-INTERNACIONAL PUBLICO,palabras_clave,1,0.0476
+train,CIVIL-PROCESAL-CONSTITUCIONAL,palabras_clave,1,0.0476
+train,CIVIL-PROCESAL-TRIBUTARIO,palabras_clave,1,0.0476
+train,CIVIL-SEGURIDAD SOCIAL,palabras_clave,1,0.0476
+train,CIVIL-SEGURIDAD SOCIAL-CONSTITUCIONAL,palabras_clave,1,0.0476
+train,CONSTITUCIONAL-PROCESAL-CIVIL,palabras_clave,1,0.0476
+train,CONSTITUCIONAL. CIVIL,palabras_clave,1,0.0476
+train,CONTRAVENCIONAL-DERECHOS HUMANOS-CIVIL,palabras_clave,1,0.0476
+train,DERECHOS HUMANOS-CIVIL-INTERNACIONAL PUBLICO,palabras_clave,1,0.0476
+train,PROCESAL - CIVIL - CONSTITUCIONAL,palabras_clave,1,0.0476
+train,PROCESAL-CIVIL-DERECHOS HUMANOS,palabras_clave,1,0.0476
+train,TRIBUTARIO - CIVIL,palabras_clave,1,0.0476
+val,CIVIL,palabras_clave,342,77.2009
+val,CIVIL-PROCESAL,palabras_clave,29,6.5463
+val,PROCESAL-CIVIL,palabras_clave,26,5.8691
+val,CIVIL-CONSTITUCIONAL,palabras_clave,9,2.0316
+val,PROCESAL - CIVIL,palabras_clave,7,1.5801
+val,CIVIL-DERECHOS HUMANOS,palabras_clave,5,1.1287
+val,PROCESAL CIVIL,palabras_clave,4,0.9029
+val,CONSTITUCIONAL - PROCESAL - CIVIL,palabras_clave,3,0.6772
+val,CONSTITUCIONAL-CIVIL,palabras_clave,2,0.4515
+val,DERECHOS HUMANOS-CIVIL,palabras_clave,2,0.4515
+val,ADMINISTRATIVO-CIVIL,palabras_clave,1,0.2257
+val,CIVIL - PROCESAL,palabras_clave,1,0.2257
+val,CIVIL- PROCESAL,palabras_clave,1,0.2257
+val,CIVIL-CONSTITUCIONAL-DERECHOS HUMANOS,palabras_clave,1,0.2257
+val,CIVIL-CONSTITUCIONAL-PROCESAL,palabras_clave,1,0.2257
+val,CIVIL-ECONOMIA,palabras_clave,1,0.2257
+val,CIVIL-INTERNACIONAL PRIVADO,palabras_clave,1,0.2257
+val,CONSTITUCIONAL - CIVIL,palabras_clave,1,0.2257
+val,CONSTITUCIONAL - CIVIL - PROCESAL,palabras_clave,1,0.2257
+val,INTERNACIONAL PRIVADO - CIVIL,palabras_clave,1,0.2257
+val,PROCESAL - CONSTITUCIONAL - CIVIL,palabras_clave,1,0.2257
+val,PROCESAL-CIVIL-DERECHOS HUMANOS,palabras_clave,1,0.2257
+val,PROCESAL-SEGURIDAD SOCIAL-CIVIL,palabras_clave,1,0.2257
+val,SEGURIDAD SOCIAL - CIVIL,palabras_clave,1,0.2257

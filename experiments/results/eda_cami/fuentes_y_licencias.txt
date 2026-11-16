@@ -1,0 +1,29 @@
+FUENTES Y LICENCIAS — CP2
+Consulta de las fichas públicas: 16 noviembre 2026.
+
+[1] Marianbasti. jurisprudencia-Argentina-SAIJ. Hugging Face Datasets.
+https://huggingface.co/datasets/marianbasti/jurisprudencia-Argentina-SAIJ
+Metadatos de licencia consultados:
+https://huggingface.co/datasets/marianbasti/jurisprudencia-Argentina-SAIJ/blame/main/README.md
+La ficha de esta distribución declara Apache-2.0 e identifica a SAIJ como origen.
+Esta comprobación documenta lo declarado por el distribuidor; no constituye
+una auditoría independiente de derechos de cada documento subyacente.
+
+[2] DCC Universidad de Chile. BETO, bert-base-spanish-wwm-cased. Hugging Face.
+https://huggingface.co/dccuchile/bert-base-spanish-wwm-cased
+En License Disclaimer, los autores describen CC BY 4.0 como la licencia que
+expresa su intención, con incertidumbre sobre compatibilidad de licencias de
+algunos corpus de entrenamiento, especialmente para uso comercial. Conservar
+esa salvedad; no presentarla como prohibición comercial absoluta ni garantía.
+
+Referencia académica indicada por la ficha de BETO:
+Cañete, J., Chaperon, G., Fuentes, R., Ho, J.-H., Kang, H. y Pérez, J. (2020).
+Spanish Pre-Trained BERT Model and Evaluation Data. PML4DC at ICLR 2020.
+
+REPRODUCIBILIDAD Y ALCANCE
+La consulta actual no reconstruye la revisión exacta de la fuente descargada
+por el equipo. Conservar sus archivos locales y metadatos; no volver a descargar
+ni regenerar splits para este cierre. La autorización de Práctica Legal es
+independiente de las declaraciones de los recursos públicos y queda según
+confirmación de Cami desde el inicio del proyecto. No se redistribuyen aquí
+textos del bufete, referencias CER ni listas de nombres.
