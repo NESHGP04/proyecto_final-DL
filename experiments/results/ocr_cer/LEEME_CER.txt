@@ -1,0 +1,43 @@
+CP1 — TASA DE ERROR POR CARÁCTER EN TRES PÁGINAS
+
+RESULTADOS REPORTADOS POR CAMI
+D02_p03, ampliación: CER 0,0030 = 0,30 %.
+D05_p03, demanda: CER 0,0023 = 0,23 %.
+D05_p11, demanda: CER 0,0050 = 0,50 %.
+Se cumple el mínimo previsto de tres páginas. La media simple aproximada es
+0,3433 %, presentada como 0,34 %. Se calcula desde los valores redondeados
+reportados, sin ponderar por extensión de página. No es CER global del corpus.
+
+MÉTODO Y FUENTE
+Según el proceso seguido con Cami, se prepararon transcripciones manuales desde
+el PDF y se compararon localmente con el OCR de las mismas páginas mediante
+src.data.ocr.character_error_rate. Las correspondencias se corrigieron durante
+la preparación; usar únicamente los resultados finales de esta tabla.
+El detalle concreto de la confusión inicial debe anotarlo Cami localmente.
+Los valores anteriores no representan una mejora del OCR ni se promedian con
+los finales: procedían de comparaciones que la observadora corrigió.
+No se recibieron las transcripciones, textos OCR ni longitudes finales aquí;
+los valores se transcriben de sus resultados. No se recalculó el CER fuente.
+
+ALCANCE
+Las páginas seleccionadas pertenecen a dos escritos de un mismo expediente
+laboral. La muestra no es aleatoria y se concentra en narración legible.
+Los valores indican baja discrepancia por carácter en esas tres páginas;
+no demuestran el mismo desempeño en las 94 páginas, carátulas, resoluciones,
+sellos, manuscritos, otros expedientes o áreas. No se mide comprensión del
+contenido ni exactitud de clasificación. No expresar 100-CER como precisión
+de palabras ni atribuir intervalos de confianza no calculados.
+La confianza de Tesseract y el CER son métricas diferentes.
+
+PENDIENTES
+Conservar referencias y OCR localmente. No subirlos al repo ni compartirlos
+con el informe. Para un CER agregado ponderado harían falta las distancias y
+longitudes de referencia finales, no promediar solo porcentajes redondeados.
+La revisión humana de los 47 fragmentos y el CER están documentados según
+reporte de Cami. La autorización para usar fragmentos en demo/presentación
+sigue siendo un pendiente separado antes de declarar CP1 completo.
+No se cambiaron código, modelos, datos o test y no se ejecutaron comandos Git.
+
+PARA EL REPO
+Esta carpeta contiene solo métricas agregadas, IDs anónimos y explicación de
+método/alcance. No contiene texto de documentos ni de transcripciones.

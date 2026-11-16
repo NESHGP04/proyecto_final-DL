@@ -1,0 +1,18 @@
+{
+  "fuente": "Resultados numéricos corregidos reportados por Cami tras transcripción y comparación local",
+  "metrica": "distancia de edición por caracteres / caracteres de referencia",
+  "funcion": "src.data.ocr.character_error_rate",
+  "n_paginas": 3,
+  "n_documentos": 2,
+  "n_expedientes": 1,
+  "cer_minimo_reportado": 0.0023,
+  "cer_maximo_reportado": 0.005,
+  "media_simple_aproximada": 0.0034333333333333334,
+  "media_simple_porcentaje_aproximada": 0.3433333333333333,
+  "cer_global_ponderado": null,
+  "motivo_no_ponderado": "No se compartieron las longitudes finales de referencia ni las distancias de edición; no se reconstruyen conteos a partir de CER redondeados.",
+  "seleccion": "Tres páginas de narración; no se documentó muestreo aleatorio.",
+  "normalizacion_adicional": "No documentada; cálculo reportado con la función existente.",
+  "recalculado_aqui": false,
+  "autorizacion_uso": "Estado pendiente de documentar"
+}

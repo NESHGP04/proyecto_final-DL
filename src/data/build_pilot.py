@@ -1,12 +1,12 @@
 """De texto de OCR a fragmentos anonimizados listos para revisar (conjunto piloto de los 12 PDFs).
 
 Flujo: páginas de OCR -> limpieza -> hechos de demandas/ampliaciones -> fragmentos de ~150 palabras
--> anonimización (reglas + nombres candidatos + nombres curados) -> informe de residuos.
+-> anonimización (reglas + lista curada, o candidatos si aún no hay lista) -> informe de residuos.
 
 Salidas en data/interim/piloto/ (ignorado por git):
   fragmentos.csv          fragmentos anonimizados (revisión_humana = no hasta que Cami los revise)
   nombres_candidatos.txt  nombres detectados automáticamente: Cami los revisa y guarda la lista final
-                          en nombres_caso.txt (esa lista, si existe, se aplica además de los candidatos)
+                          en nombres_caso.txt (si existe, se usa solo esa lista; no puede estar vacía)
   informe.json            solo conteos y estadísticas, sin texto: se puede compartir
 
 Uso: python -m src.data.build_pilot
@@ -39,8 +39,15 @@ def build_pilot(ocr_dir, out_dir, area="laboral", target_words=150):
         lines = clean_document(_pages(ocr_dir, row["doc_id"]))
         docs[row["doc_id"]] = lines
         names.update(candidate_names("\n".join(lines)))
-    curated = load_names(out / "nombres_caso.txt")
-    all_names = sorted(names | set(curated), key=len, reverse=True)
+    curated_path = out / "nombres_caso.txt"
+    curated = load_names(curated_path)
+    if curated_path.exists():
+        if not curated:
+            raise ValueError("nombres_caso.txt existe pero está vacío: completar la revisión antes de regenerar")
+        selected_names = set(curated)
+    else:
+        selected_names = names
+    all_names = sorted(selected_names, key=len, reverse=True)
     (out / "nombres_candidatos.txt").write_text(
         "# Candidatos automáticos (pueden tener falsos positivos y omitir nombres). Revisar y guardar la lista\n"
         "# final, uno por línea, en nombres_caso.txt. Este archivo contiene datos personales: no compartir.\n"

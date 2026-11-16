@@ -1,0 +1,4 @@
+split,n,minimo,p10,mediana,p90,maximo
+train,12600,20,42,89,194,400
+val,2688,20,41,90,191,399
+piloto_revisado,47,125,152,167,207.2,231

@@ -1,0 +1,13 @@
+{
+  "fuente": "Salidas agregadas y capturas de ejecución local de Cami; actualización con 47/47 utilizables",
+  "n_train": 12600,
+  "n_piloto_total": 47,
+  "n_piloto_utilizado": 47,
+  "tipos_saij_train": 32910,
+  "tipos_piloto": 1134,
+  "tipos_compartidos": 1049,
+  "tipos_exclusivos_piloto": 85,
+  "porcentaje_tipos_piloto_compartidos": 92.50440917107584,
+  "porcentaje_tipos_piloto_exclusivos": 7.495590828924162,
+  "nota": "Tipos léxicos según normalización/filtros del notebook; no precisión de clasificación ni prueba de generalización"
+}
