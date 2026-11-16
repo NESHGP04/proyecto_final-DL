@@ -1,36 +1,32 @@
-# Evidencia del bufete: datos desconocidos permanecen null.
-# Tiempos asistidos de demo; no usar este archivo incompleto como configuración numérica.
-# Escenarios ejecutables documentados por separado en value_scenarios.yaml.
-
+# Evidencia reportada y valores de escenario; e_0 desconocido. No cargar como política activa.
 N:
-  value: 10
-  min: null
-  max: null
-  fuente: estimacion_bufete
-  unidad: casos_judiciales_nuevos/mes
-  alcance: promedio aproximado del bufete completo; excluye trámites administrativos
-  nota: Estimación mensual para nuevos casos judiciales, no número de documentos ni
-    volumen total de trámites. Falta rango y correspondencia con unidades clasificadas.
+  value: 60
+  min: 50
+  max: 70
+  fuente: derivado_de_estimaciones_bufete_reportadas_por_Cami_2026_11_16
+  unidad: documentos/mes
+  nota: Diez casos judiciales nuevos por 5–7 documentos; 60 es punto medio de escenario,
+    no conteo observado.
 t_m:
   value: 9.5
   min: 9
   max: 10
   fuente: prueba_exploratoria_reportada_por_Cami_n2
-  unidad: minutos/tarea_manual
-  nota: Media de 9 y 10 minutos manuales. Min/max describen dos observaciones, no
-    límites poblacionales ni rango de sensibilidad validado. Media asistida 4,325
-    minutos; diferencia 5,175 minutos. Modo demo simulada confirmado; equivalencia
-    de tareas y unidad caso/documento pendientes. Los tiempos asistidos no miden M3/M4.
-    No asumir ahorro de todo t_m. La variante workflow descuenta por separado el tiempo
-    asistido; no sustituye t_m por ahorro neto silenciosamente.
+  unidad: minutos/documento
+  nota: 'Media manual reportada 9 y 10 minutos de la ronda previa; min/max son dos
+    observaciones, no límites poblacionales. API M3 posterior: 2,5 y 3 minutos, media
+    2,75, con usuarios familiarizados. No se documentó emparejamiento ni control de
+    orden/materiales. Demo previa: 4,325 minutos de media. El tiempo asistido se descuenta
+    por separado en workflow; no suponer ahorro íntegro de t_m. Cami confirmó que
+    los tiempos son por documento. No incluyen la nueva carga PDF/OCR.'
 c_h:
-  value: null
-  min: null
-  max: null
-  fuente: pendiente
-  unidad: GTQ/hora
-  nota: El rol usuario es abogado. Los honorarios por consulta no equivalen al costo
-    por hora; conversión monetaria pendiente.
+  value: 800
+  min: 600
+  max: 1000
+  fuente: rango_bufete_reportado_por_Cami_2026_11_16
+  unidad: GTQ/hora_abogado
+  nota: 800 es punto medio para escenario; valoración del tiempo, no ahorro de efectivo
+    ni dato salarial individual.
 e_0:
   value: null
   min: null
@@ -40,18 +36,20 @@ e_0:
   nota: Los errores se describen como difíciles de producir; no hay frecuencia cuantificada.
     No convertir esa descripción en cero observado.
 c_err:
-  value: null
-  min: null
-  max: null
-  fuente: pendiente
-  unidad: GTQ/caso_mal_clasificado
-  nota: Falta estimar costo de etiquetado incorrecto en organización interna. No usar
-    costos de defectos de redacción o procedimiento.
+  value: 200
+  min: 150
+  max: 250
+  fuente: derivado_15_minutos_reportados_por_Cami_y_rango_horario
+  unidad: GTQ/documento_mal_clasificado
+  nota: 10 minutos detectar y 5 corregir; supone mismo rol abogado y costo adicional
+    no incluido ya en tiempo asistido. Se penaliza sugerencia incorrecta, no error
+    jurídico final medido.
 C_op:
-  value: null
-  min: null
-  max: null
-  fuente: pendiente_medicion_por_version
+  value: 400
+  min: 400
+  max: 400
+  fuente: cotizacion_mantenimiento_reportada_por_Cami_2026_11_16
   unidad: GTQ/mes
-  nota: Precios y mantenimiento aún pendientes. Hay coeficientes medidos de inferencia
-    y límites normalizados en cp3_cp4_escenarios; no equivalen a costo mensual completo.
+  nota: 'Solo componente conocido: cuatro revisiones por Q100 cada una, 20 horas al
+    mes. Operación local sin pagos de cómputo reportados. No es costo total medido:
+    electricidad, equipo y esfuerzo de reentrenamiento cada 2–3 meses no valorados.'

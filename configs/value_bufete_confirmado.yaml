@@ -1,0 +1,30 @@
+# Evidencia reportada por Cami, 16 nov 2026. No sustituye la política activa.
+fecha: '2026-11-16'
+fuente: confirmaciones_del_bufete_reportadas_por_Cami
+casos_mes: 10
+documentos_por_caso: {min: 5, referencia: 6, max: 7}
+documentos_mes: {min: 50, referencia: 60, max: 70}
+c_h: {min: 600, referencia: 800, max: 1000}
+unidad_c_h: GTQ/hora_abogado
+fuente_referencias: puntos_medios_para_escenario_no_mediciones_adicionales
+t_m: 9.5
+t_a: 2.75
+unidad_tiempos: minutos/documento
+fuente_tiempos: medias_reportadas_n2_manual_9_y_10_API_2.5_y_3_con_familiaridad_previa
+error_deteccion_minutos: 10
+error_correccion_minutos: 5
+responsable_error: supuesto_mismo_rol_abogado
+e_0_observado: null
+e_0_escenario: 0
+fuente_e_0: supuesto_sin_credito_por_reduccion_de_errores_manuales_no_tasa_observada
+revisiones_mes: 4
+precio_revision_gtq: 100
+horas_mantenimiento_mes: 20
+mantenimiento_gtq_mes: 400
+computo: local_sin_desembolso_reportado
+otros_costos_gtq_mes: null
+reentrenamiento_intervalo_meses: {min: 2, max: 3}
+sobrecosto_revision_minutos: [0, 1]
+fuente_sobrecosto_revision: escenarios_hipoteticos_no_medido
+umbral_referencia: 0.7
+nota: No se midieron los tiempos del nuevo flujo PDF/OCR. No confundir valoración del tiempo con ahorro de efectivo.

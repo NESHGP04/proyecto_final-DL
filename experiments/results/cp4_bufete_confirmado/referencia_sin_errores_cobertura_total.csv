@@ -1,0 +1,4 @@
+scenario,documentos_mes,c_h,valor_tiempo_gtq,mantenimiento_gtq,saldo_antes_errores_otros_costos_gtq
+menor_volumen_valor_hora,50,600,3375.0,400,2975.0
+central,60,800,5400.0,400,5000.0
+mayor_volumen_valor_hora,70,1000,7875.0,400,7475.0

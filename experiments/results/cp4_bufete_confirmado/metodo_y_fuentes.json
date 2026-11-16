@@ -1,0 +1,76 @@
+{
+  "split": "val",
+  "n_val": 2688,
+  "calibrated_files": true,
+  "config": {
+    "fecha": "2026-11-16",
+    "fuente": "confirmaciones_del_bufete_reportadas_por_Cami",
+    "casos_mes": 10,
+    "documentos_por_caso": {
+      "min": 5,
+      "referencia": 6,
+      "max": 7
+    },
+    "documentos_mes": {
+      "min": 50,
+      "referencia": 60,
+      "max": 70
+    },
+    "c_h": {
+      "min": 600,
+      "referencia": 800,
+      "max": 1000
+    },
+    "unidad_c_h": "GTQ/hora_abogado",
+    "fuente_referencias": "puntos_medios_para_escenario_no_mediciones_adicionales",
+    "t_m": 9.5,
+    "t_a": 2.75,
+    "unidad_tiempos": "minutos/documento",
+    "fuente_tiempos": "medias_reportadas_n2_manual_9_y_10_API_2.5_y_3_con_familiaridad_previa",
+    "error_deteccion_minutos": 10,
+    "error_correccion_minutos": 5,
+    "responsable_error": "supuesto_mismo_rol_abogado",
+    "e_0_observado": null,
+    "e_0_escenario": 0,
+    "fuente_e_0": "supuesto_sin_credito_por_reduccion_de_errores_manuales_no_tasa_observada",
+    "revisiones_mes": 4,
+    "precio_revision_gtq": 100,
+    "horas_mantenimiento_mes": 20,
+    "mantenimiento_gtq_mes": 400,
+    "computo": "local_sin_desembolso_reportado",
+    "otros_costos_gtq_mes": null,
+    "reentrenamiento_intervalo_meses": {
+      "min": 2,
+      "max": 3
+    },
+    "sobrecosto_revision_minutos": [
+      0,
+      1
+    ],
+    "fuente_sobrecosto_revision": "escenarios_hipoteticos_no_medido",
+    "umbral_referencia": 0.7,
+    "nota": "No se midieron los tiempos del nuevo flujo PDF/OCR. No confundir valoración del tiempo con ahorro de efectivo."
+  },
+  "limitations": [
+    "Todos los resultados son escenarios exploratorios, no ahorro comprobado ni flujo de efectivo.",
+    "N=50/60/70 documentos: diez casos por cinco/seis/siete documentos; puntos centrales derivados.",
+    "e_0 es desconocido. Se fija cero solo para no acreditar mejoras frente al error manual.",
+    "Precisión y cobertura provienen de SAIJ-val calibrado; su transferencia al bufete no está medida.",
+    "No se verificó aquí cómo se ajustó la temperatura. La selección de umbral usa esta misma val.",
+    "t_a procede de M3 con dos usuarios familiarizados. Aplicarlo a M0/M1/M2/M4 es hipótesis comparativa.",
+    "Los tiempos no incluyen la nueva carga PDF/OCR; no se conoce su sobrecosto.",
+    "Se penalizan 15 minutos por sugerencia incorrecta aceptada; no es tasa de errores finales tras revisión.",
+    "Se supone que detectar/corregir lo hace el abogado y que esos 15 minutos no están incluidos en t_a.",
+    "Mantenimiento cotizado Q400/mes por cuatro revisiones; 20 horas mensuales, no Q100 por hora.",
+    "Sin pagos de cómputo reportados; electricidad, equipo y esfuerzo de reentrenamiento no valorados.",
+    "Saldo después de mantenimiento y penalización modelada; antes de otros costos no medidos.",
+    "Máximos analíticos no actualizan modelo, API, temperatura ni umbral activo."
+  ],
+  "archivos_predicciones_sha256": {
+    "m0_cal_val_preds.csv": "997f58ad34f3e8f273616e25131a29914cd5b06c2f308dd4bd3e9444e560ad62",
+    "m1_cal_val_preds.csv": "97bc0236beff8551e0892cd62057844802425ee413114e6dd1a327a1708ae8ca",
+    "m2_cal_val_preds.csv": "71d2b3ef5f031d5276663e2a8ebfb3d25d030710558504700d5052250a9661a8",
+    "m3_cal_val_preds.csv": "ac0c29421903b6b3e66bdea493b95df0b5797467ac322806f0661ed26ace9872",
+    "m4_cal_val_preds.csv": "b3b3b257759550114fc4814409785095e5a47e4716b528efe1c376958d65745b"
+  }
+}

@@ -1,0 +1,31 @@
+CP4 — ESCENARIOS ACTUALIZADOS CON EVIDENCIA DEL BUFETE
+Fecha: 16 noviembre 2026. Datos reportados por Cami; resultados SAIJ-validación.
+
+La unidad de uso es el documento: diez casos judiciales nuevos al mes por cinco a siete documentos representan 50–70 clasificaciones mensuales. El centro de 60 es un punto medio de escenario, no un conteo adicional. La valoración reportada del tiempo del abogado es Q600–Q1,000 por hora; Q800 es la referencia central.
+
+Los tiempos exploratorios medios reportados por documento son 9.5 minutos manuales y 2.75 minutos con API M3. Los dos participantes ya conocían el sistema. No hubo control documentado del orden/materiales y esta medición precedió la carga PDF/OCR. Por ello, la diferencia no se interpreta como reducción causal comprobada ni se transfiere automáticamente al nuevo flujo.
+
+El mantenimiento cotizado asciende a Q400 al mes: cuatro revisiones por Q100 cada una, con 20 horas de dedicación estimadas. No son Q100 por hora. El sistema opera localmente y no se reportaron desembolsos de cómputo. Equipo, electricidad y esfuerzo de reentrenamiento cada dos o tres meses siguen sin valoración monetaria; Q400 es el componente conocido, no el costo económico completo.
+
+Detectar una etiqueta incorrecta toma diez minutos y corregirla cinco según lo reportado. Valorar esos quince minutos con la tarifa del abogado produce Q150–Q250 por sugerencia incorrecta aceptada, Q200 en el escenario central. Se supone que esa tarea la realiza el abogado y que no está incluida ya en el tiempo asistido. Es una penalización exploratoria de sugerencias incorrectas, no una medición de errores finales después de confirmación humana. La frecuencia de error manual permanece desconocida: e_0=0 solo evita acreditar una reducción de errores manuales que no fue observada.
+
+La extensión de valor utilizada es:
+V(tau) = N*[kappa*(t_m-t_a) - (1-kappa)*t_r]/60*c_h
+         - N*kappa*[(1-p)-e_0]*c_err - 400.
+Los rechazados siguen el trabajo manual de referencia; t_r expresa trabajo adicional respecto a él. Se evalúan cero y un minuto de sobrecosto como hipótesis, no mediciones. Los aceptados conservan el tiempo asistido, de modo que no se acredita el ahorro de los 9.5 minutos completos.
+
+Con M3 calibrado y tau=0.70, la cobertura en SAIJ-val es 73.85% y la precisión entre aceptados es 89.82%. El escenario central N=60, c_h=800, sin sobrecosto adicional de los rechazados, produce Q2,685.94 mensuales después del mantenimiento y de la penalización de errores. Con un minuto adicional por rechazado, produce Q2,476.71. El rango combinado menor/mayor volumen y valoración horaria es Q1,528.71–Q4,100.33 sin sobrecosto adicional, o Q1,397.94–Q3,795.20 con ese minuto. Estos rangos son escenarios, no intervalos de confianza.
+
+El valor Q5,000 central comunicado anteriormente corresponde al supuesto de cobertura total y ausencia de errores: 60*6.75/60*800-400. Se conserva como referencia aritmética simplificada y no como resultado del modelo. Su rango equivalente es Q2,975–Q7,475 antes de errores y otros costos.
+
+Comparación central, tau fijo 0.70, sin sobrecosto adicional de revisión:
+M0: Q2,297.77; M1: Q1,912.95; M2: Q1,526.34; M3: Q2,685.94; M4: Q2,740.40.
+Se aplica el mismo tiempo de M3 a las otras versiones solo para comparación condicional: no se midió usabilidad con cada una. El máximo analítico de la malla central es distinto: M3 tau=0.61 da Q2,787.28 y M4 tau=0.66 da Q2,774.78. La clasificación entre versiones depende de la política y supuestos; un mayor F1 no garantiza mayor valor para cualquier umbral.
+
+Los umbrales analíticos se seleccionaron sobre la misma validación que se resume. No son desempeño fuera de muestra, no cambian la API ni justifican cambiarla sin acordar la política con Nes. No se ha verificado aquí el procedimiento de ajuste de temperatura ni su carga en el predictor. Las frecuencias de error y cobertura proceden del proxy SAIJ, no de documentos del bufete; tampoco se modeló correlación entre documentos del mismo caso. El piloto laboral no valida desempeño en todas las áreas.
+
+PENDIENTES PARA CIERRE DEFINITIVO
+Confirmar calibración cargada en API y acordar modelo/umbral; documentar costos no valorados o dejarlos explícitos; validar transferencia y tiempos del flujo PDF/OCR cuando sea posible. No es necesario inventar tasa manual ni repetir la prueba previa para completar el informe de escenarios. Test sigue cerrado hasta la evaluación final coordinada.
+
+VERIFICACIÓN
+Se ejecutaron seis pruebas existentes del cálculo de workflow mediante Python (pytest no está instalado en este entorno). Se reconciliaron 3,030 filas de curvas y se comprobaron los 60 resúmenes con conteos independientes de aceptados/errores. No se entrenó ni se abrió test. Los CSV de predicciones no se modificaron. Los SHA256 de las entradas usadas constan en metodo_y_fuentes.json.
