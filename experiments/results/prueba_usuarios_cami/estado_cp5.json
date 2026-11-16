@@ -4,8 +4,15 @@
   "confirmacion_visible": "verificada_por_Cami",
   "prevencion_doble_click": "verificada_por_Cami",
   "registro_correcciones_csv": "verificado_por_Cami",
-  "api_real": "pendiente_de_conectar",
+  "api_real": "conectada_y_probada_por_Cami",
   "prueba_usabilidad_previa": "dos participantes en demo",
-  "medicion_con_modelo_real": "pendiente en CP3 tras integración API",
-  "pdf": "limitación documentada; solo TXT o texto pegado"
+  "medicion_con_modelo_real": "dos tiempos reportados: 2:30 y 3:00; familiaridad previa",
+  "pdf": "Soporte implementado para PDF digital, escaneado y mixto; instalación y prueba en Mac pendientes",
+  "health_reportado": {
+    "estado": "ok",
+    "modelo": "m3",
+    "umbral": 0.7
+  },
+  "estado": "Flujo de texto con API M3 verificado por Cami; ampliación PDF implementada, pendiente prueba local",
+  "validacion_pdf": "19 pruebas automatizadas de lectura y flujo pasan; OCR sintético real con idioma inglés; español e interfaz real pendientes"
 }

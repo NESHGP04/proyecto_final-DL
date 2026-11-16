@@ -1,0 +1,9 @@
+# Instalar en el entorno donde se ejecuta Streamlit, no hace falta PyTorch.
+streamlit>=1.40,<2
+httpx>=0.27,<1
+PyYAML>=6,<7
+pypdf>=5,<7
+pdf2image>=1.17,<2
+numpy>=1.26
+Pillow>=10.1
+# OCR escaneado también requiere ejecutables Tesseract/Poppler e idioma spa.

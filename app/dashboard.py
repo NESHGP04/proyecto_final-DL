@@ -248,6 +248,8 @@ def main():
     sys.path.insert(0, str(ROOT))
     import streamlit as st
     from src.config import load_config, path_of
+    from app.document_reader import (MAX_PDF_BYTES, MAX_SELECTED_PAGES, extract_pdf,
+                                     ocr_status, pdf_page_count)
 
     cfg = load_config()
     areas = cfg["areas"]
@@ -269,6 +271,14 @@ def main():
 
     def seleccionar_entrada(value):
         st.session_state["tipo_entrada"] = value
+
+    def limpiar_pdf():
+        for key in ("pdf_prepared_for", "pdf_review", "pdf_pages", "pdf_first", "pdf_last", "pdf_force"):
+            st.session_state.pop(key, None)
+
+    if st.session_state.pop("limpiar_archivos_pendiente", False):
+        limpiar_pdf()
+        st.session_state.pop("archivo_caso", None)
 
     with st.sidebar:
         st.markdown('<div class="pl-brand">Práctica Legal</div>', unsafe_allow_html=True)
@@ -313,29 +323,114 @@ def main():
         if st.button("Cargar ejemplo"):
             st.session_state["entrada"] = DEMO_EXAMPLES[example]
     text, uploaded = "", None
+    is_pdf, prepared, classify_ready = False, False, True
+    if kind == "Cargar archivo":
+        uploaded = st.file_uploader("Archivo TXT en UTF-8 o PDF", type=["txt", "pdf"],
+                                    key="archivo_caso", on_change=limpiar_pdf)
+        classify_ready = uploaded is not None
+        if uploaded is not None:
+            is_pdf = Path(uploaded.name).suffix.lower() == ".pdf"
+            if is_pdf:
+                classify_ready = False
+                if uploaded.size > MAX_PDF_BYTES:
+                    st.error("El PDF supera el límite de 50 MB.")
+                else:
+                    try:
+                        pdf_data = uploaded.getvalue()
+                        total_pages = pdf_page_count(pdf_data)
+                        st.caption(f"PDF de {total_pages} páginas. Selecciona hasta {MAX_SELECTED_PAGES} páginas por extracción.")
+                        left, right = st.columns(2)
+                        first = int(left.number_input("Desde la página", min_value=1, max_value=total_pages,
+                                                       value=1, step=1, key="pdf_first"))
+                        if "pdf_last" in st.session_state and not first <= st.session_state.pdf_last <= total_pages:
+                            st.session_state["pdf_last"] = first
+                        end_default = {} if "pdf_last" in st.session_state else {"value": min(total_pages, max(first, 3))}
+                        last = int(right.number_input("Hasta la página", min_value=first, max_value=total_pages,
+                                                       step=1, key="pdf_last", **end_default))
+                        force = st.checkbox("Usar OCR en todas las páginas seleccionadas", key="pdf_force")
+                        st.caption("En automático se usa OCR cuando falta texto suficiente. Si la vista previa omite contenido del escaneo, activa OCR en todas las páginas.")
+                        signature = hashlib.blake2b(pdf_data, key=st.session_state.envio_salt, digest_size=20).hexdigest()
+                        prepared_for = (signature, first, last, force)
+                        prepared = st.session_state.get("pdf_prepared_for") == prepared_for
+                        if st.button("Extraer texto del PDF", key="extraer_pdf", type="primary",
+                                     disabled=last-first+1 > MAX_SELECTED_PAGES):
+                            st.session_state.pop("pdf_prepared_for", None)
+                            st.session_state.pop("pdf_pages", None)
+                            prepared = False
+                            bar = st.progress(0., text="Preparando documento…")
+                            try:
+                                result = extract_pdf(pdf_data, first, last, force_ocr=force,
+                                                     progress=lambda done,n: bar.progress(done/n, text=f"Procesando página {done} de {n}…"))
+                            finally:
+                                bar.empty()
+                            st.session_state["pdf_review"] = result.text
+                            st.session_state["pdf_pages"] = list(result.pages)
+                            st.session_state["pdf_prepared_for"] = prepared_for
+                            prepared = True
+                            st.success("Texto preparado. Revísalo antes de clasificar.")
+                        if last-first+1 > MAX_SELECTED_PAGES:
+                            st.warning("Reduce el rango a un máximo de 10 páginas para extraer texto.")
+                        classify_ready = prepared
+                        if prepared:
+                            st.caption(f"Se prepararon las páginas físicas {first}–{last} de {total_pages}; el resto del PDF no se enviará al clasificador.")
+                            with st.expander("Detalle de extracción por página"):
+                                st.dataframe(st.session_state.pdf_pages, hide_index=True, use_container_width=True)
+                            if any(p["caracteres"] == 0 for p in st.session_state.pdf_pages):
+                                st.warning("Alguna página no produjo texto. Comprueba el detalle y la vista previa.")
+                        with st.expander("Comprobar disponibilidad de OCR local"):
+                            if st.button("Comprobar OCR", key="comprobar_ocr"):
+                                status = ocr_status()
+                                if status["ready"]:
+                                    st.success("OCR local en español disponible.")
+                                else:
+                                    st.info("OCR aún no disponible. Instala Tesseract/Poppler y el idioma español según LEEME_PDF.txt. Los PDF digitales pueden leerse sin OCR.")
+                    except (ValueError, OSError) as exc:
+                        prepared, classify_ready = False, False
+                        st.error(str(exc) if isinstance(exc, ValueError) else "No se pudo preparar el PDF localmente.")
+            elif uploaded.size > 4*max_chars:
+                classify_ready = False
+                st.error("El archivo TXT supera el tamaño permitido.")
     with st.form("clasificar", clear_on_submit=False):
         if kind == "Pegar texto":
             text = st.text_area("Texto del caso", height=180, key="entrada", max_chars=max_chars)
+        elif is_pdf:
+            if prepared:
+                text = st.text_area("Texto extraído del PDF: revisa y corrige antes de clasificar", height=260, key="pdf_review")
+                st.caption(f"Texto seleccionado: {len(text):,} caracteres. Máximo admitido por la API: {max_chars:,}.")
+                if len(text) > max_chars:
+                    st.warning("Hay demasiado texto para una petición. Reduce el rango de páginas o el texto de la vista previa; no se recortará automáticamente.")
+                st.caption(f"El modelo usa como máximo {cfg['models']['m3']['max_len']} tokens del inicio del texto. Selecciona contenido representativo del caso; no se analiza todo un documento largo.")
+            else:
+                st.info("Carga un PDF y extrae el texto antes de clasificar.")
+        elif uploaded is not None:
+            st.caption("El TXT se leerá en UTF-8 al clasificar.")
         else:
-            uploaded = st.file_uploader("Archivo TXT en UTF-8", type=["txt"])
-        submit = st.form_submit_button("Clasificar y agregar a la cola", type="primary")
-    st.caption("La cola no conserva el texto. El campo de entrada permanece visible hasta que lo limpies.")
+            st.caption("Selecciona un archivo para continuar.")
+        submit = st.form_submit_button("Clasificar y agregar a la cola", type="primary", disabled=not classify_ready)
+    st.caption("La cola y el registro no conservan el texto. La entrada y la vista previa PDF permanecen en esta sesión hasta limpiarlas.")
     if st.button("Limpiar entrada"):
         # Se aplica antes de crear el widget en la próxima ejecución.
         st.session_state["limpiar_pendiente"] = True
         st.session_state.pop("ultimo_envio", None)
+        st.session_state["limpiar_archivos_pendiente"] = True
         st.rerun()
     if submit:
         try:
             if kind == "Cargar archivo":
                 if uploaded is None:
-                    raise ValueError("Selecciona un archivo TXT.")
-                if uploaded.size > 4 * max_chars:
-                    raise ValueError("El archivo supera el tamaño permitido.")
-                try:
-                    text = uploaded.getvalue().decode("utf-8-sig")
-                except UnicodeDecodeError:
-                    raise ValueError("El archivo debe estar codificado en UTF-8.") from None
+                    raise ValueError("Selecciona un archivo TXT o PDF.")
+                if is_pdf:
+                    if not prepared:
+                        raise ValueError("Extrae y revisa el texto del PDF antes de clasificar.")
+                else:
+                    if uploaded.size > 4 * max_chars:
+                        raise ValueError("El archivo supera el tamaño permitido.")
+                    try:
+                        text = uploaded.getvalue().decode("utf-8-sig")
+                    except UnicodeDecodeError:
+                        raise ValueError("El TXT debe estar codificado en UTF-8.") from None
+                    if text.lstrip().startswith("{\\rtf"):
+                        raise ValueError("El TXT contiene texto enriquecido. Expórtalo como texto plano UTF-8.")
             validate_text(text, max_chars)
             settings = threshold if source == "demo" else base_url.rstrip("/")
             token = submission_token(text, source, settings, st.session_state.envio_salt)
