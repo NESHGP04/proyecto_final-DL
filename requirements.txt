@@ -15,5 +15,6 @@ uvicorn
 streamlit
 pytesseract
 pdf2image
+pypdf==7.1.0     # lectura de PDF con capa de texto en app/document_reader.py (y sus tests)
 pytest
 httpx==0.28.1   # solo para los tests de la API (TestClient)
