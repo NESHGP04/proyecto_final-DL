@@ -124,3 +124,22 @@ def test_benchmark_reports_times_and_cost_only_if_given():
     assert res["latencia_ms_p95"] >= res["latencia_ms_p50"] >= 0 and "costo_por_1000_predicciones" not in res
     res = benchmark(lambda texts: [None] * len(texts), ["a"], n_single=5, batch_size=2, cost_per_hour=1.0)
     assert res["costo_por_1000_predicciones"] > 0
+
+
+def test_health_reports_temperature_and_loader_reads_the_model_specific_file(tmp_path, monkeypatch):
+    from app.predictor import load_temperature
+    from src.config import load_config
+
+    class Calibrated(FakePredictor):
+        temperature = 1.41
+
+    health = TestClient(create_app(Calibrated())).get("/health").json()
+    assert health["temperatura"] == 1.41 and health["calibrado"] is True
+    assert TestClient(create_app(FakePredictor())).get("/health").json()["calibrado"] is False
+
+    monkeypatch.setenv("DL_PATH_ARTIFACTS", str(tmp_path))
+    (tmp_path / "m3_temperature.json").write_text('{"temperature": 1.4}', encoding="utf-8")
+    (tmp_path / "m4_temperature.json").write_text('{"temperature": 1.7}', encoding="utf-8")
+    cfg = load_config()
+    assert load_temperature(cfg, "m3") == 1.4 and load_temperature(cfg, "m4") == 1.7
+    assert load_temperature(cfg, "m2") == 1.0  # sin archivo: no calibra

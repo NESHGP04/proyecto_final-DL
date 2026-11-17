@@ -71,7 +71,7 @@ Las áreas, semillas, rutas e hiperparámetros están en `configs/config.yaml`; 
    python -m src.reproduce --stage final --confirm-frozen --models m0 m1 m2 m3 --seeds 42 43 44
    ```
 
-   El umbral de confianza τ se elige con las predicciones de validación y se aplica a test. Si ya existen predicciones de test, el comando se niega a correr (`--again` lo permite; hay que declararlo en el informe).
+   Configuración congelada el 16 nov 2026: modelo M3 con calibración por temperatura (T = 1,41, ajustada con val) y τ = 0,77 (`configs/config.yaml`). El umbral de confianza τ se elige con las predicciones de validación y se aplica a test. Si ya existen predicciones de test, el comando se niega a correr (`--again` lo permite; hay que declararlo en el informe).
 
 Ambos escriben `experiments/results/summary_<etapa>.md` con F1 macro e intervalo de confianza, exactitud, recall por clase, valor mensual, deltas entre versiones con intervalo pareado y costos.
 

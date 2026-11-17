@@ -75,7 +75,9 @@ def create_app(predictor, threshold=0.70, max_chars=20000, log_path=None, model_
 
     @app.get("/health")
     def health():
-        return {"estado": "ok", "modelo": model_name, "umbral": threshold}
+        temperature = float(getattr(predictor, "temperature", 1.0))  # 1.0 = sin calibrar
+        return {"estado": "ok", "modelo": model_name, "umbral": threshold, "temperatura": temperature,
+                "calibrado": temperature != 1.0}
 
     @app.post("/classify")
     def classify(body: ClassifyIn):

@@ -49,3 +49,18 @@ def test_bundle_refuses_non_public_data(tmp_path):
     _write_splits(tmp_path, origen="bufete")
     with pytest.raises(SystemExit):
         build_bundle(tmp_path / "b.zip", cfg)
+
+
+def test_bundle_with_test_adds_test_split_and_all_val_results(tmp_path):
+    cfg = _cfg(tmp_path)
+    _write_splits(tmp_path)
+    for f in ("m4_val_preds.csv", "m4_val_run.json", "m3_val_run.json"):
+        (tmp_path / "results" / f).write_text("x", encoding="utf-8")
+    out, _ = build_bundle(tmp_path / "f.zip", cfg, with_test=True)
+    names = set(zipfile.ZipFile(out).namelist())
+    assert f"{TOP}/data/processed/test.csv" in names
+    assert f"{TOP}/experiments/results/m3_val_preds.csv" in names and f"{TOP}/experiments/results/m4_val_preds.csv" in names
+    assert not any("test_preds" in n for n in names)               # nunca predicciones de test
+    _write_splits(tmp_path, origen="bufete")
+    with pytest.raises(SystemExit):                                 # test de datos no públicos tampoco sube
+        build_bundle(tmp_path / "g.zip", cfg, with_test=True)

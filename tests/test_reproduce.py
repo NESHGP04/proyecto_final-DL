@@ -47,3 +47,15 @@ def test_rerun_skips_finished_models_and_force_repeats_them(tmp_path):
     assert info.stat().st_mtime_ns == first  # no se volvió a entrenar
     reproduce(cfg, "val", ["m1"], data_dir=data, out_dir=res, n_boot=50, force=True)
     assert info.stat().st_mtime_ns != first
+
+
+def test_final_interrupted_run_can_resume_but_finished_one_cannot_repeat(tmp_path):
+    cfg, data, res = _data(tmp_path)
+    reproduce(cfg, "val", ["m0", "m1"], data_dir=data, out_dir=res, n_boot=50)
+    reproduce(cfg, "final", ["m0", "m1"], data_dir=data, out_dir=res, confirm_frozen=True, n_boot=50)
+    (res / "summary_final.md").unlink()  # como si la corrida se hubiera cortado antes de escribir el resumen
+    before = (res / "m1_test_preds.csv").stat().st_mtime_ns
+    reproduce(cfg, "final", ["m0", "m1"], data_dir=data, out_dir=res, confirm_frozen=True, n_boot=50)
+    assert (res / "summary_final.md").exists() and (res / "m1_test_preds.csv").stat().st_mtime_ns == before  # M1 no se repitió
+    with pytest.raises(SystemExit):
+        reproduce(cfg, "final", ["m0", "m1"], data_dir=data, out_dir=res, confirm_frozen=True)

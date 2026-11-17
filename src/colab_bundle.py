@@ -5,9 +5,11 @@ Incluye: src/, configs/, requirements.txt, data/processed/train.csv y val.csv (+
 los resultados de val de M0 a M2 (predicciones y run.json), para poder compararlos con M3, y el corpus MLM
 sin etiquetas de M4 (data/external/corpus_mlm.txt, texto público de SAIJ sin val/test; ver src/data/dapt_corpus.py).
 NO incluye: test.csv (cerrado), data/raw, data/interim (datos del bufete), pesos ni caches.
+Con --with-test (solo para la evaluación final, una vez, con la configuración congelada) agrega test.csv y los
+resultados de val de M3 y M4, y escribe artifacts/colab_bundle_final.zip. El test es de SAIJ (público).
 Si data/processed tuviera datos del bufete el empaquetado se niega: en Colab solo van datos públicos.
 
-Uso: python -m src.colab_bundle
+Uso: python -m src.colab_bundle [--with-test]
 """
 import argparse
 import zipfile
@@ -19,7 +21,7 @@ TOP = "proyecto_final-DL"
 CODE_DIRS = ("src", "configs")
 
 
-def _files(cfg):
+def _files(cfg, with_test=False):
     """Lista de (ruta en disco, ruta dentro del zip relativa al proyecto)."""
     out = []
     for d in CODE_DIRS:
@@ -27,29 +29,31 @@ def _files(cfg):
                 if p.is_file() and "__pycache__" not in p.parts and p.suffix != ".pyc"]
     out.append((ROOT / "requirements.txt", Path("requirements.txt")))
     processed = path_of(cfg, "processed")
-    out += [(processed / n, Path("data/processed") / n) for n in ("train.csv", "val.csv", "splits_info.json")]
+    names = ("train.csv", "val.csv", "splits_info.json") + (("test.csv",) if with_test else ())
+    out += [(processed / n, Path("data/processed") / n) for n in names]
     external = path_of(cfg, "external")
     out += [(external / n, Path("data/external") / n) for n in ("corpus_mlm.txt", "corpus_mlm_info.json")]
     results = path_of(cfg, "results")
+    pattern = "m[0-4]*" if with_test else "m[012]*"  # para el test final hacen falta los val de todos (elegir τ y T)
     out += [(p, Path("experiments/results") / p.name)
-            for p in sorted(results.glob("m[012]*_val_preds.csv")) + sorted(results.glob("m[012]*_val_run.json"))]
+            for p in sorted(results.glob(f"{pattern}_val_preds.csv")) + sorted(results.glob(f"{pattern}_val_run.json"))]
     return [(src, dst) for src, dst in out if src.exists()]
 
 
-def build_bundle(out_path=None, cfg=None, allow_non_public=False):
+def build_bundle(out_path=None, cfg=None, allow_non_public=False, with_test=False):
     cfg = cfg or load_config()
     processed = path_of(cfg, "processed")
     if not allow_non_public:
         import pandas as pd
-        for name in ("train.csv", "val.csv"):
+        for name in ("train.csv", "val.csv") + (("test.csv",) if with_test else ()):
             f = processed / name
             if f.exists():
                 origen = pd.read_csv(f, usecols=lambda c: c in {"origen", "grupo_id"}, encoding="utf-8")
                 if "origen" not in origen or set(origen["origen"].dropna()) - {"saij"}:
                     raise SystemExit(f"{name} no es solo de datos públicos (origen != saij): no se sube a Colab")
-    out = Path(out_path or path_of(cfg, "artifacts") / "colab_bundle.zip")
+    out = Path(out_path or path_of(cfg, "artifacts") / ("colab_bundle_final.zip" if with_test else "colab_bundle.zip"))
     out.parent.mkdir(parents=True, exist_ok=True)
-    files = _files(cfg)
+    files = _files(cfg, with_test)
     with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as z:
         for src, dst in files:
             z.write(src, f"{TOP}/{dst.as_posix()}")
@@ -57,6 +61,8 @@ def build_bundle(out_path=None, cfg=None, allow_non_public=False):
 
 
 if __name__ == "__main__":
-    argparse.ArgumentParser().parse_args()
-    path, names = build_bundle()
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--with-test", action="store_true", help="incluye test.csv: solo para la evaluación final")
+    args = ap.parse_args()
+    path, names = build_bundle(with_test=args.with_test)
     print(f"{path} ({path.stat().st_size / 1e6:.1f} MB, {len(names)} archivos)")

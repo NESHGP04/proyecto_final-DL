@@ -1,0 +1,11 @@
+{
+ "model": "m0",
+ "seed": 42,
+ "n_train": 12600,
+ "device": "cpu",
+ "train_seconds": 5.57,
+ "inference_ms_per_text": 0.177,
+ "peak_memory_mb": 688,
+ "machine": "x86_64",
+ "system": "Linux"
+}

@@ -27,7 +27,11 @@ serving:
   model: m3             # m3 o m4: pesos guardados con --save en artifacts/
   max_text_chars: 20000 # la API rechaza textos más largos
 
-confidence_threshold: 0.70   # τ de partida; el óptimo se elige con la curva de valor
+# CONGELADO 16 nov 2026: modelo M3 con calibración por temperatura (T=1.41, ajustada con val; la API la lee de
+# artifacts/m3_temperature.json) y τ=0.77, el máximo de la curva de valor con probabilidades calibradas en val
+# (la curva es plana entre 0.74 y 0.84). τ y T salen de la misma partición, así que son algo optimistas, y los
+# parámetros de valor son supuestos: τ no es un óptimo económico real. Antes valía 0.70 (punto de partida).
+confidence_threshold: 0.77
 
 # Hiperparámetros iniciales (se ajustan solo con val)
 models:

@@ -6,8 +6,8 @@ Uso:
 
 `val` entrena cada modelo con train y evalúa en val. `final` evalúa en test UNA sola vez, con la
 configuración ya congelada: el umbral τ se elige con las predicciones de val de cada modelo (nunca
-con las de test) y se aplica a test. Si ya existen predicciones de test, `final` se niega a correr
-salvo `--again`, que hay que declarar en el informe.
+con las de test) y se aplica a test. Si ya existe summary_final.md, `final` se niega a correr salvo
+`--again`, que hay que declarar en el informe. Si se corta a medias, relanzar el mismo comando continúa.
 
 Es reanudable: si se corta (p. ej. Colab), volver a lanzar el mismo comando omite lo ya terminado y M3
 continúa desde su último checkpoint de época. `--force` repite todo.
@@ -100,8 +100,10 @@ def reproduce(cfg, stage="val", models=None, seeds=None, data_dir=None, out_dir=
     if final:
         if not confirm_frozen:
             raise SystemExit("final usa el test: confirmar que la configuración está congelada con --confirm-frozen")
-        if list(out.glob("*_test_preds.csv")) and not again:
-            raise SystemExit("ya hay predicciones de test: el test se usa una sola vez (--again lo permite; declararlo en el informe)")
+        # El test se usa una sola vez: se niega si ya hay un resumen final completo. Predicciones sueltas (una corrida
+        # cortada en Colab) no lo bloquean: al relanzar, los modelos terminados se omiten y solo falta lo pendiente.
+        if (out / "summary_final.md").exists() and not again:
+            raise SystemExit("ya hay un resumen final: el test se usa una sola vez (--again lo permite; declararlo en el informe)")
 
     from src.data.dataset import load_split
     n_train = len(load_split(cfg, "train", data_dir=data_dir))
